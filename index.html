@@ -25,7 +25,7 @@
     </head>
     <!-- Hello! Welcome to my source code. Feel free to take a look around. I wrote this page using only HTML/CSS and the Bootstrap 4 / Font Awesome libraries. -->
     <body>
-        <div class="container">
+        <div id="top" class="container">
             <br>
             <div class="jumbotron">
                 <h1 class="display-4">Hello. <span class="text-muted">My name is</span> David Menear.</h2>
@@ -55,11 +55,36 @@
             </div>
             <br><br>
             <div class="row">
-                <div class=col-2></div>
-                <div class="alert alert-warning col-8">
+                <div class="col">
+                    <div id="education" class="card">
+                        <div class="card-header">
+                            <h2 class="h2 text-muted"><i class="fas fa-graduation-cap"></i> Education</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <img width="125px" height="36px" src="2.png" style="margin-right: 18px; margin-bottom: 9px; margin-top: 9px;" alt="Georgia Southern University">(2012 - 2018) - <a target="_blank" href="1.jpg" class="text-secondary" data-toggle="tooltip" data-placement="top" data-html="true" data-animated="fade" title="<img width='150px' height='119px' src='1.jpg'>">Bachelor of Science, Computer Science</a>
+                            </h5>
+                            <p class="card-text">
+                                The Georgia Southern Computer Science program is primarily focused around learning and applying design theories and concepts while gaining a full understanding 
+                                of each layer of computing from the bottom up. The primary language used in the courses was Java, but we also worked with several others depending on what 
+                                was most applicable for a particular subject (Python for Machine Learning, C and C++ for System Software, etc).
+                            </p>
+                            <p class="card-text">
+                                While attending Georgia Southern, I was approached by the president of a student organization named 
+                                <a target="_blank" href="https://humansvszombies.org/" class="text-secondary">Humans vs. Zombies</a> (essentially a big game of tag) and asked to create a website 
+                                that they could use to track their game. I had never worked with PHP before so I decided to use this as an opportunity to teach myself. It took a few iterations 
+                                to achieve the <a target="_blank" href="http://gsuhvz.com/" class="text-secondary">final product</a>, and although it isn't perfect, it has been operating 
+                                without support since a year or two before I graduated and is still in use by the organization today.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="alert alert-warning col-8 offset-2">
                     <strong>Hey there!</strong> This page is still a work in progress. Come back soon and you will see more content.
                 </div>
-                <div class=col-2></div>
             </div>
         </div>
     </body>
