@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="This game is based on a Mozilla tutorial for learning the basics of JavaScript game programming.">
+        <meta name="author" content="David Menear">
+        <meta name="keywords" content="David Menear, David, Dave, Menear, Atlanta, Software Developer, Software, Game, Breakout, Brick Breaker, Brick, Breaker, Arcade">
+        <meta name="robots" content="index, follow">
+        <link rel="apple-touch-icon" sizes="180x180" href="../icon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../icon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../icon/favicon-16x16.png">
+        <link rel="shortcut icon" href="../favicon.ico">
+        <link rel="manifest" href="../site.webmanifest">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <title>David Menear - JavaScript Brick Breaker</title>
+        <style>
+            * { padding: 0; margin: 0; }
+            canvas { background: #f6f6f6; display: block; margin: 0 auto; }
+        </style>
+    </head>
+    <body>
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <h2 class="h2 text-muted">JavaScript Brick Breaker</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <canvas onclick="startGame()" id="brickBreakerCanvas" class="border" width="800" height="600"></canvas>
+                    <script src="brickbreaker.js"></script>
+                </div>
+            </div><br>
+            <div class="row">
+                <div class="col-10 offset-1">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">About this game</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <strong>Controls:</strong> Left and right arrow keys move the paddle. Space retries if all lives are exhausted.
+                            </p>
+                            <p class="card-text">
+                                If you're on a mobile device, it's pretty obvious that I didn't design this game for mobile use. This project was a short refresher on JavaScript 
+                                and an interesting look into the way people make games using JavaScript as this was something I had never been exposed to. I started off by following 
+                                <a href="https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript" target="_blank" class="text-secondary">this tutorial</a> 
+                                on how to make a 2D game with only JavaScript, but was annoyed with some of the major problems with the game's "physics" and decided to expand on it 
+                                and make it a little bit more my own.
+                            </p>
+                            <p class="card-text">
+                                This version takes horizontal bounces into account, adds directional bounces based on where the ball hits the paddle, has a more clear-cut start and end, 
+                                makes use of a more user-friendly respawn sequence in between lives, and adds a little bit more color. This was a brief, but fun project that I enjoyed 
+                                creating. Hope you like it.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div><br>
+            <div class="row">
+                <div class="col text-center">
+                    <a role="button" class="btn btn-secondary" href="../">
+                        Take me back
+                    </a>
+                </div>
+            </div>
+        </div><br>
+    </body>
+</html>
