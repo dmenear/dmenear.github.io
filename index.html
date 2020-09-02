@@ -176,6 +176,59 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title">
+                                        PlainSight (2020)
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-md-6 col-sm-12">
+                                    <img draggable="false" src="plainsight_meneardev1.PNG" class="img-fluid img-thumbnail" alt="PlainSight screenshot 1">
+                                    <br><br>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <img draggable="false" src="plainsight_meneardev2.PNG" class="img-fluid img-thumbnail" alt="PlainSight screenshot 2">
+                                    <br><br>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">
+                                        PlainSight is my first published browser extension. I first had the idea for this project a few years ago but at the time I had no idea how 
+                                        to go about creating a browser extension and had some other projects going on anyway. When I remembered the concept, I decided that I was 
+                                        going to figure out how to create a 
+                                        <a class="text-secondary" href="https://chrome.google.com/webstore/detail/plainsight/inakjdiiijhidnhbkhnjembjmfaggkce?hl=en">Chrome extension</a>. 
+                                        As it turns out, it's almost the exact same as creating a 
+                                        <a class="text-secondary" href="https://addons.mozilla.org/en-US/firefox/addon/plainsight/">Firefox extension</a> or 
+                                        <a class="text-secondary" href="https://microsoftedge.microsoft.com/addons/detail/plainsight/kehkoimkkccclodondgbinncejdjmhdp">Edge extension</a>, 
+                                        so I ended up supporting all three!
+                                    </p>
+                                    <p class="card-text">
+                                        The basic idea behind this project is that it allows people to communicate secretly over public channels (Twitch chat, Facebook group 
+                                        messages/statuses, Twitter, etc.). The user enters a password into the extension popup which is then converted into a 192-bit key via the 
+                                        scrypt password derivation algorithm. This key is then used to symmetrically encrypt a message using AES in CBC mode with a randomized 
+                                        initialization vector (which is then combined with the encrypted message). This ensures that the encrypted output is always different even if 
+                                        the input message is repeated. This encrypted message can be posted anywhere on the web and any other user with the extension installed that 
+                                        is using the same password will see the decrypted message. There are a few hotkeys and context menu options that were added to improve the 
+                                        fluidity and overall user experience of the extension.
+                                    </p>
+                                    <p class="card-text">
+                                        The real meat of this project was created with vanilla <mark>JavaScript</mark> which is supported with some basic HTML and CSS (primarily for 
+                                        the extension popup). I've always been interested in <mark>cryptography</mark> so this project was especially fun and has inspired some 
+                                        other projects that will probably be listed here soon.
+                                    </p>
+                                    <p class="card-text">
+                                        443{e9cc37ee00c90342c0427d00df162b8c964fbfca98a247ff316523530df8a2acf7a3064bdc9e037f33d3b47d37622cd8e974395ae422d04cb4b55e8451983292bd0d9e5e250e81d13372fec57a9791532e641790f6de7686910b37cd387b888a}336
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title">
                                         Alteration (2018)
                                     </h5>
                                 </div>
@@ -309,8 +362,7 @@
                                     </p>
                                     <p class="card-text">
                                         There is also an administration panel that only game moderators can see. This panel allows moderators to send email blasts, update the state of the 
-                                        game, post news articles, change the state of players, send email blasts, control "missions" using text blasts, and much more. As of writing this, 
-                                        the site is still live and used by the organization. You can see it <a target="_blank" class="text-secondary" href="http://gsuhvz.com">here</a>.
+                                        game, post news articles, change the state of players, send email blasts, control "missions" using text blasts, and much more.
                                     </p>
                                 </div>
                             </div>
@@ -339,7 +391,8 @@
                             <div class="row">
                                 <div class="col">
                                     <p class="card-text">
-                                        More info to come, check out the demo <a class="text-secondary" href="brickbreaker/">here</a>.
+                                        This project was a short refresher on JavaScript and an interesting look into the way people make games using JavaScript as this was something I 
+                                        had never been exposed to. Check out the demo <a class="text-secondary" href="brickbreaker/">here</a>.
                                     </p>
                                 </div>
                             </div>
