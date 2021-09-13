@@ -26,11 +26,14 @@
             $( document ).ready(function() {
                 setInterval(blinkCursor, 500);
 
+                var cursorHidden = false;
                 function blinkCursor() {
-                    if($("#cursor").is(":visible")) {
-                        $("#cursor").hide();
+                    if(cursorHidden) {
+                        $("#cursor").css("color", "#00FF00");
+                        cursorHidden = false;
                     } else {
-                        $("#cursor").show();
+                        $("#cursor").css("color", "#111111");
+                        cursorHidden = true;
                     }
                 }
 
