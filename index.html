@@ -38,35 +38,40 @@
                 }
 
                 var enterCount = 0;
+                var messagePlaying = false;
                 $("body").on("keydown", function(e) {
                     if(e.keyCode == 13) {
-                        enterCount += 1;
-                        if(enterCount == 1) {
-                            $("#cursor").appendTo("#wrapperOne");
-                            $("#wrapperOne").show();
-                            typeMessage("#messageOne", "No, I'm David Menear...", 0, 1200);
-                        } else if(enterCount == 5) {
-                            $("#cursor").appendTo("#wrapperTwo");
-                            $("#wrapperTwo").show();
-                            typeMessage("#messageTwo", "Please stop pressing enter.", 0, 1000);
-                        } else if(enterCount == 20) {
-                            $("#cursor").appendTo("#wrapperThree");
-                            $("#wrapperThree").show();
-                            typeMessage("#messageThree", "It's not going to do anything else.. I promise.", 0, 800);
-                        } else if(enterCount == 50) {
-                            $("#cursor").appendTo("#wrapperFour");
-                            $("#wrapperFour").show();
-                            typeMessage("#messageFour", ">:(", 0, 2200);
-                        } else if(enterCount == 80) {
-                            $("#cursor").appendTo("#wrapperFive");
-                            $("#wrapperFive").show();
-                            typeMessage("#messageFive", "You know what? Fine. Goodbye...", 0, 1000);
-                            setTimeout(function() {
-                                window.location.href = "https://www.linkedin.com/in/dmenear/"
-                            }, 4000);
+                        if(!messagePlaying) {
+                            enterCount += 1;
+                            if(enterCount == 1) {
+                                moveCursor("#greeting", "#wrapperOne");
+                                typeMessage("#messageOne", "No, I'm David Menear...", 0, 1200);
+                            } else if(enterCount == 5) {
+                                moveCursor("#messageOne", "#wrapperTwo");
+                                typeMessage("#messageTwo", "Please stop pressing enter.", 0, 1000);
+                            } else if(enterCount == 20) {
+                                moveCursor("#messageTwo", "#wrapperThree");
+                                typeMessage("#messageThree", "It's not going to do anything else.. I promise.", 0, 800);
+                            } else if(enterCount == 50) {
+                                moveCursor("#messageThree", "#wrapperFour");
+                                typeMessage("#messageFour", ">:(", 0, 2200);
+                            } else if(enterCount == 80) {
+                                moveCursor("#messageFour", "#wrapperFive");
+                                typeMessage("#messageFive", "You know what? Fine. Goodbye...", 0, 1000);
+                                setTimeout(function() {
+                                    window.location.href = "https://www.linkedin.com/in/dmenear/"
+                                }, 4000);
+                            }
                         }
                     }
                 });
+
+                function moveCursor(fromMessage, toWrapper) {
+                    messagePlaying = true;
+                    $("#cursor").appendTo(toWrapper);
+                    $(fromMessage).append("⠀");
+                    $(toWrapper).show();
+                }
 
                 function typeMessage(target, message, index, timeout) {
                     setTimeout(function() {
@@ -82,6 +87,8 @@
                         index += 1;
                         if(index < message.length) {
                             typeMessage(target, message, index, timeout);
+                        } else {
+                            messagePlaying = false;
                         }
                     }, timeout);
                 }
@@ -96,7 +103,7 @@
                 <div class="col-xl-8 col-lg-10 col-md-12">
                     <div class="jumbotron">
                         <h1>
-                            <span>$ Hello. My name is David Menear.<span id="cursor">_</span>
+                            <span id="greeting">$ Hello. My name is David Menear.<span id="cursor">_</span></span>
                             <span style="display: none;" id="wrapperOne"><br>$ <span id="messageOne"></span></span>
                             <span style="display: none;" id="wrapperTwo"><br>$ <span id="messageTwo"></span></span>
                             <span style="display: none;" id="wrapperThree"><br>$ <span id="messageThree"></span></span>
