@@ -29,10 +29,10 @@
                 var cursorHidden = false;
                 function blinkCursor() {
                     if(cursorHidden) {
-                        $("#cursor").css("color", "#00FF00");
+                        $("#cursor").text("_");
                         cursorHidden = false;
                     } else {
-                        $("#cursor").css("color", "#111111");
+                        $("#cursor").text("⠀");
                         cursorHidden = true;
                     }
                 }
