@@ -1,0 +1,17 @@
+body {
+    background-color: #000000;
+    font-family: Consolas;
+    color: #00FF00;
+}
+
+hr {
+    background-color: #00FF00;
+}
+
+.jumbotron {
+    background-color: #111111;
+}
+
+#cursor {
+    font-weight: bold;
+}

@@ -4,17 +4,18 @@
         <title>David Menear - Software Developer</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="Hello! My name is David Menear and I'm a software developer. Check this page out to learn more about me.">
+        <meta name="description" content="Hello! My name is David Menear and I'm a software engineer. Check this page out to learn more about me.">
         <meta name="author" content="David Menear">
-        <meta name="keywords" content="David Menear, David, Dave, Menear, Atlanta, Johns Creek, Alpharetta, Sandy Springs, Roswell, Dunwoody, Decatur, Peachtree Corners, Norcross, Chamblee, Marietta, Statesboro, Georgia, ATL, GA, Developer, Software, Java, Python, Bachelor's, Degree, Bachelors, Bachelor's Degree, Computer Science, Georgia Southern University, Georgia Southern, GaSou, Software Developer, Engineer, Coding, Programmer, Coder, Programming, Georgia Southern, Talent, Sharon, Steven, Richard, Rebekah, Daniel, Danny, Andrew, Abby, Abigail, Jessica Tran, Jessica, Best">
+        <meta name="keywords" content="David Menear, David, Dave, Menear, San Diego, Spectrum, Kearny Mesa, Escondido, Encinitas, California, CA, SD, Software, Engineer, Developer, Software Engineer, Software Developer, Coding, Programmer, Coder, Programming, Java, Python, Bachelor's, Degree, Bachelors, Bachelor's Degree, Computer Science, Georgia Southern University, Georgia Southern, GaSou, Georgia Southern, Talent, Best">
         <meta name="robots" content="index, follow">
         <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="manifest" href="site.webmanifest">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="coreui-icons/css/all.css">
+        <link rel="stylesheet" href="custom.css">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -22,471 +23,112 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
+            $( document ).ready(function() {
+                setInterval(blinkCursor, 500);
+
+                function blinkCursor() {
+                    if($("#cursor").is(":visible")) {
+                        $("#cursor").hide();
+                    } else {
+                        $("#cursor").show();
+                    }
+                }
+
+                var enterCount = 0;
+                $("body").on("keydown", function(e) {
+                    if(e.keyCode == 13) {
+                        enterCount += 1;
+                        if(enterCount == 1) {
+                            $("#cursor").appendTo("#wrapperOne");
+                            $("#wrapperOne").show();
+                            typeMessage("#messageOne", "No, I'm David Menear...", 0, 1200);
+                        } else if(enterCount == 5) {
+                            $("#cursor").appendTo("#wrapperTwo");
+                            $("#wrapperTwo").show();
+                            typeMessage("#messageTwo", "Please stop pressing enter.", 0, 1000);
+                        } else if(enterCount == 20) {
+                            $("#cursor").appendTo("#wrapperThree");
+                            $("#wrapperThree").show();
+                            typeMessage("#messageThree", "It's not going to do anything else.. I promise.", 0, 800);
+                        } else if(enterCount == 50) {
+                            $("#cursor").appendTo("#wrapperFour");
+                            $("#wrapperFour").show();
+                            typeMessage("#messageFour", ">:(", 0, 2200);
+                        } else if(enterCount == 80) {
+                            $("#cursor").appendTo("#wrapperFive");
+                            $("#wrapperFive").show();
+                            typeMessage("#messageFive", "You know what? Fine. Goodbye...", 0, 1000);
+                            setTimeout(function() {
+                                window.location.href = "https://www.linkedin.com/in/dmenear/"
+                            }, 4000);
+                        }
+                    }
+                });
+
+                function typeMessage(target, message, index, timeout) {
+                    setTimeout(function() {
+                        var charToType = message.charAt(index);
+                        if(charToType == ",") {
+                            timeout = 400;
+                        } else if(charToType == ".") {
+                            timeout = 200;
+                        } else {
+                            timeout = 40;
+                        }
+                        $(target).append(charToType);
+                        index += 1;
+                        if(index < message.length) {
+                            typeMessage(target, message, index, timeout);
+                        }
+                    }, timeout);
+                }
+            });
         </script>
     </head>
-    <!-- Hello! Welcome to my source code. Feel free to take a look around. I wrote this page using only HTML/CSS and the Bootstrap 4 / Font Awesome libraries. -->
     <body>
-        <div id="top" class="container">
-            <br>
-            <div class="jumbotron">
-                <h1 class="display-4">Hello. <span class="text-muted">My name is</span> David Menear.</h2>
-            </div>
-            <div class="row align-items-center">
-                <div class="col-lg-3 col-md-4 col-sm-12 text-center" style="padding: 7px 0px;">
-                    <img src="images/0.jpg" draggable="false" class="rounded-circle img-fluid" alt="Picture of me :)"/>
-                </div>
-                <div class="col-lg-9 col-md-8 col-sm-12">
-                    <span style="font-size: 1.15rem; line-height: 1.7;">
-                            I'm a software developer currently living in the Metro Atlanta area. I graduated from Georgia Southern University in 2018 with a <mark>bachelor's degree in 
-                            Computer Science</mark>. Although I have worked with many different languages and technologies, I am most comfortable with <mark>Java</mark> and 
-                            <mark>Python</mark>. I've loved software development since I was very young, and I'm always working on one side project or another. You can see more information 
-                            about me below. Please feel free to reach out to me at <a class="text-secondary" href="mailto:david@menear.dev">david@menear.dev</a>.
-                    </span>
-                </div>
-            </div>
-            <br>
-            <div class="row align-items-center">
-                <div class="col-sm-3 col-xs-12"><hr></div>
-                <div class="col-sm-6 col-xs-12 d-flex justify-content-around">
-                    <a target="_blank" href="https://github.com/dmenear"><span data-toggle="tooltip" data-placement="bottom" title="GitHub" style="font-size: 3.0rem; color: #6e5494;" class="fab fa-github"></span></a>
-                    <a target="_blank" href="https://www.linkedin.com/in/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LinkedIn" style="font-size: 3.0rem; color: #0077B5;" class="fab fa-linkedin"></span></a>
-                    <a target="_blank" href="https://www.hackerrank.com/davidlmenear"><span data-toggle="tooltip" data-placement="bottom" title="HackerRank" style="font-size: 3.0rem; color: #28ba5a;" class="fab fa-hackerrank"></span></a>
-                </div>
-                <div class="col-sm-3 col-xs-12"><hr></div>
-            </div>
-            <br><br>
-            <div class="row">
-                <div class="alert alert-info col-10 offset-1 text-center">
-                    <strong>TLDR?</strong> No problem! You can see the concise version by 
-                    <a target="_blank" href="resume.pdf" class="text-secondary">downloading my resume</a>!
-                </div>
-            </div>
+        <div id="top" class="container-fluid">
             <br>
             <div class="row">
-                <div class="col">
-                    <div id="education" class="card">
-                        <div class="card-header">
-                            <h2 class="h2 text-muted"><i class="fas fa-graduation-cap"></i> Education</h2>
+                <div class="offset-xl-2 offset-lg-1 offset-md-0"></div>
+                <div class="col-xl-8 col-lg-10 col-md-12">
+                    <div class="jumbotron">
+                        <h1>
+                            <span>$ Hello. My name is David Menear.<span id="cursor">_</span>
+                            <span style="display: none;" id="wrapperOne"><br>$ <span id="messageOne"></span></span>
+                            <span style="display: none;" id="wrapperTwo"><br>$ <span id="messageTwo"></span></span>
+                            <span style="display: none;" id="wrapperThree"><br>$ <span id="messageThree"></span></span>
+                            <span style="display: none;" id="wrapperFour"><br>$ <span id="messageFour"></span></span>
+                            <span style="display: none;" id="wrapperFive"><br>$ <span id="messageFive"></span></span>
+                        </h2>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-lg-3 col-md-4 col-sm-12 text-center" style="padding: 7px 0px;">
+                            <a target="_blank" href="https://www.linkedin.com/in/dmenear/">
+                                <img src="images/0.jpg" draggable="false" class="rounded-circle img-fluid" alt="Picture of me :)"/>
+                            </a>
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <img width="125px" height="36px" src="images/2.png" draggable="false" style="margin-right: 18px; margin-bottom: 9px; margin-top: 9px;" alt="Georgia Southern University">(Graduated May 2018) - <a target="_blank" href="images/1.jpg" class="text-secondary" data-toggle="tooltip" data-placement="top" data-html="true" data-animated="fade" title="<img width='150px' height='119px' src='images/1.jpg' draggable='false'>">Bachelor of Science, Computer Science</a>
-                            </h5>
-                            <p class="card-text">
-                                The Georgia Southern Computer Science program is primarily focused around learning and applying design theories and concepts while gaining a full understanding 
-                                of each layer of computing from the bottom up. The primary language used in the courses was Java, but we also worked with several others depending on what 
-                                was most applicable for a particular subject (Python for Machine Learning, C and C++ for System Software, etc).
-                            </p>
-                            <p class="card-text">
-                                While attending Georgia Southern, I was approached by the president of a student organization named 
-                                <a target="_blank" href="https://humansvszombies.org/" class="text-secondary">Humans vs. Zombies</a> (essentially a big game of tag) and asked to create a website 
-                                that they could use to track their game. I had never worked with PHP before so I decided to use this as an opportunity to teach myself. It took a few iterations 
-                                to achieve the final product, and although it wasn't perfect, it was operating without support for a year or two before I graduated and was still used by the 
-                                organization for quite a while afterwards.
-                            </p>
+                        <div class="col-lg-9 col-md-8 col-sm-12">
+                            <span style="font-size: 1.15rem; line-height: 1.7;">
+                                    I'm a software engineer currently living and working in San Diego, CA. I graduated from Georgia Southern University in 2018 with a bachelor's degree in 
+                                    Computer Science. Although I have worked with many different languages and technologies, I am most comfortable with Java and 
+                                    Python. I've loved software development since I was very young, and I'm always working on one side project or another. You can see more information 
+                                    about me at the links below. Please feel free to reach out to me at <a href="mailto:david@menear.dev">david@menear.dev</a>.
+                            </span>
                         </div>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col">
-                    <div id="career" class="card">
-                        <div class="card-header">
-                            <h2 class="h2 text-muted"><i class="fas fa-briefcase"></i> Career</h2>
+                    <br>
+                    <div class="row align-items-center">
+                        <div class="col-sm-3 col-xs-12"><hr></div>
+                        <div class="col-sm-6 col-xs-12 d-flex justify-content-around">
+                            <a target="_blank" href="https://github.com/dmenear"><span data-toggle="tooltip" data-placement="bottom" title="GitHub" style="font-size: 3.0rem; color: #6e5494;" class="cib-github"></span></a>
+                            <a target="_blank" href="https://www.linkedin.com/in/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LinkedIn" style="font-size: 3.0rem; color: #0077B5;" class="cib-linkedin"></span></a>
+                            <a target="_blank" href="https://leetcode.com/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LeetCode" style="font-size: 3.0rem; color: #ffffff;" class="cib-leetcode"></span></a>
+                            <a target="_blank" href="https://www.hackerrank.com/davidlmenear"><span data-toggle="tooltip" data-placement="bottom" title="HackerRank" style="font-size: 3.0rem; color: #28ba5a;" class="cib-hackerrank"></span></a> 
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                CEDAR CX Technologies (October 2019 - Present) - <span class="text-muted">Java Developer</span>
-                            </h5>
-                            <p class="card-text">
-                                As a Java developer at CEDAR, the core function of my team is to maintain and extend the company's two large legacy applications. 
-                                The first of those is a workflow application in which the data flow logic as well as the logic embedded in the execution modules 
-                                is proprietary and mostly consists of good ol' Java EE. The second is a B2B web portal that operates on the Apache Struts framework.
-                            </p>
-                            <p class="card-text">
-                                Outside of those primary responsibilities, the team is always looking to the future and often uses other projects as a chance to experiment with newer technologies 
-                                that could be used to bring our legacy apps into the present. Many of these newer technologies that have sparked interest are Spring projects, most notably Spring Boot in 
-                                combination with Spring Web MVC, Spring Security, Spring Cache, and others.
-                            </p>
-                            <br>
-                            <h5 class="card-title">
-                                CEDAR CX Technologies (June 2018 - October 2019) - <span class="text-muted">Application Support Engineer</span>
-                            </h5>
-                            <p class="card-text">
-                                The core function of the Application Support team at CEDAR is to diagnose and resolve production issues with the Client Services team and to provide active 
-                                monitoring of the company's operational systems. When we were not actively working issues, we were always working to improve our overall efficiency through 
-                                automation. This allowed me to work with several different technologies. 
-                            </p>
-                            <p class="card-text">
-                                During my time in App Support, I wrote and refactored numerous Python and Bash scripts for both resolving live issues and monitoring systems, reverse 
-                                engineered compiled Java code and Perl scripts to diagnose logic issues, worked with the Twilio API to determine the health of our SMS services, 
-                                created a Python-based web app that allows the Client Services team to perform actions usually passed to the Application Support team, and performed 
-                                several other critical tasks to improve the efficiency and reliability of our services.
-                            </p>
-                            <p class="card-text">
-                                There was a period of time where the team had less oversight than usual as our manager had left the company and during this time I assumed some of the responsibilities 
-                                that would usually fall to that position. These included interviewing potential candidates for various openings (manager, co-op, and engineer), rewriting and 
-                                redesigning the technical test used to evaluate candidates as well as administering and grading that test, and running several interdepartmental meetings.
-                            </p>
-                            <br>
-                            <h5 class="card-title">
-                                DigitalRoute (Summer 2015) - <span class="text-muted">Solution Development Intern</span>
-                            </h5>
-                            <p class="card-text">
-                                The purpose of this internship was to develop a proof-of-concept for a large potential client. They (the client) already had a large amount of data stored on an 
-                                Apache Hadoop cluster and were wanting to use DigitalRoute's MediationZone software to aggregate and process the data. During the course of this internship, I 
-                                learned the basics of Hadoop and Apache Pig and used Pig Latin alongside MediationZone's proprietary languages (very similar to Java) to create workflows 
-                                that simulated the implementation of the client's needs.
-                            </p>
-                        </div>
+                        <div class="col-sm-3 col-xs-12"><hr></div>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col">
-                    <div id="skills" class="card">
-                        <div class="card-header">
-                            <h2 class="h2 text-muted"><i class="fas fa-laptop-code"></i> Skills</h2> <small class="text-muted">Grouped by proficiency level</small>
-                        </div>
-                        <div class="card-body container-fluid">
-                            <div class="row">
-                                <div class="col-md-4 col-sm-12">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><h5 class="h5">Advanced</h5></li>
-                                        <li class="list-group-item">Java</li>
-                                        <li class="list-group-item">Spring</li>
-                                        <li class="list-group-item">Python</li>
-                                        <li class="list-group-item">SQL (Oracle, MySQL, SQLite)</li>
-                                        <li class="list-group-item">HTML/CSS</li>
-                                        <li class="list-group-item">Git</li>
-                                    </ul><br>
-                                </div>
-                                <div class="col-md-4 col-sm-12">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><h5 class="h5">Intermediate</h5></li>
-                                        <li class="list-group-item">C#</li>
-                                        <li class="list-group-item">Rust</li>
-                                        <li class="list-group-item">Bash</li>
-                                        <li class="list-group-item">PHP</li>
-                                        <li class="list-group-item">JavaScript</li>
-                                        <li class="list-group-item">Django</li>
-                                    </ul><br>
-                                </div>
-                                <div class="col-md-4 col-sm-12">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><h5 class="h5">Basic</h5></li>
-                                        <li class="list-group-item">C</li>
-                                        <li class="list-group-item">C++</li>
-                                        <li class="list-group-item">Perl</li>
-                                        <li class="list-group-item">Pig Latin</li>
-                                    </ul><br>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col">
-                    <div id="certifications" class="card">
-                        <div class="card-header">
-                            <h2 class="h2 text-muted"><i class="fas fa-certificate"></i> Certifications</h2>
-                        </div>
-                        <div class="card-body container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-md-2 col-sm-12">
-                                                    <a target="_blank" class="text-secondary" href="https://www.youracclaim.com/badges/953add65-269f-49af-b0ca-6aed7fb26e8a/public_url">
-                                                        <img draggable="false" src="images/ocajse8.png" class="img-fluid" alt="OCA Java SE8">
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-10 col-sm-12">
-                                                    <h4 class="h4">
-                                                        <a target="_blank" class="text-secondary" href="https://www.youracclaim.com/badges/953add65-269f-49af-b0ca-6aed7fb26e8a/public_url">
-                                                            Oracle Certified Associate, Java SE 8 Programmer
-                                                        </a>
-                                                    </h4>
-                                                    <p class="card-text">
-                                                        <strong>Issued: </strong><i>November 17, 2019</i><br>
-                                                        "An Oracle Certified Associate, Java SE 8 Programmer has demonstrated knowledge of object-oriented concepts, the Java programming 
-                                                        language and general knowledge of Java platforms and technologies."
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-md-2 col-sm-12">
-                                                    <a target="_blank" class="text-secondary" href="https://www.youracclaim.com/badges/5ea2d990-a480-4633-98a6-72cf77873b90/public_url">
-                                                        <img draggable="false" src="images/ocpjse8.png" class="img-fluid" alt="OCP Java SE8">
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-10 col-sm-12">
-                                                    <h4 class="h4">
-                                                        <a target="_blank" class="text-secondary" href="https://www.youracclaim.com/badges/5ea2d990-a480-4633-98a6-72cf77873b90/public_url">
-                                                            Oracle Certified Professional, Java SE 8 Programmer
-                                                        </a>
-                                                    </h4>
-                                                    <p class="card-text">
-                                                        <strong>Issued: </strong><i>January 26, 2020</i><br>
-                                                        "An Oracle Certified Professional, Java SE 8 Programmer has validated their Java development skills by answering challenging, 
-                                                        real-world, scenario-based questions that measure problem solving skills using Java code."
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col">
-                    <div id="projects" class="card">
-                        <div class="card-header">
-                            <h2 class="h2 text-muted"><i class="fas fa-code"></i> Projects</h2>
-                        </div>
-                        <div class="card-body container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title">
-                                        PlainSight (2020)
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/plainsight_meneardev1.PNG" class="img-fluid img-thumbnail" alt="PlainSight screenshot 1">
-                                    <br><br>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/plainsight_meneardev2.PNG" class="img-fluid img-thumbnail" alt="PlainSight screenshot 2">
-                                    <br><br>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p class="card-text">
-                                        PlainSight is my first published browser extension. I first had the idea for this project a few years ago but at the time I had no idea how 
-                                        to go about creating a browser extension and had some other projects going on anyway. When I remembered the concept, I decided that I was 
-                                        going to figure out how to create a 
-                                        <a target="_blank" class="text-secondary" href="https://chrome.google.com/webstore/detail/plainsight/inakjdiiijhidnhbkhnjembjmfaggkce?hl=en">Chrome extension</a>. 
-                                        As it turns out, it's almost the exact same as creating a 
-                                        <a target="_blank" class="text-secondary" href="https://addons.mozilla.org/en-US/firefox/addon/plainsight/">Firefox extension</a> or 
-                                        <a target="_blank" class="text-secondary" href="https://microsoftedge.microsoft.com/addons/detail/plainsight/kehkoimkkccclodondgbinncejdjmhdp">Edge extension</a>, 
-                                        so I ended up supporting all three!
-                                    </p>
-                                    <p class="card-text">
-                                        The basic idea behind this project is that it allows people to communicate secretly over public channels (Twitch chat, Facebook group 
-                                        messages/statuses, Twitter, etc.). The user enters a password into the extension popup which is then converted into a 192-bit key via the 
-                                        scrypt password derivation algorithm. This key is then used to symmetrically encrypt a message using AES in CBC mode with a randomized 
-                                        initialization vector (which is then combined with the encrypted message). This ensures that the encrypted output is always different even if 
-                                        the input message is repeated. This encrypted message can be posted anywhere on the web and any other user with the extension installed that 
-                                        is using the same password will see the decrypted message. There are a few hotkeys and context menu options that were added to improve the 
-                                        fluidity and overall user experience of the extension.
-                                    </p>
-                                    <p class="card-text">
-                                        The real meat of this project was created with vanilla <mark>JavaScript</mark> which is supported with some basic HTML and CSS (primarily for 
-                                        the extension popup). I've always been interested in <mark>cryptography</mark> so this project was especially fun and has inspired some 
-                                        other projects that will probably be listed here soon.
-                                    </p>
-                                    <p class="card-text">
-                                        443{e9cc37ee00c90342c0427d00df162b8c964fbfca98a247ff316523530df8a2acf7a3064bdc9e037f33d3b47d37622cd8e974395ae422d04cb4b55e8451983292bd0d9e5e250e81d13372fec57a9791532e641790f6de7686910b37cd387b888a}336
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title">
-                                        Alteration (2018)
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/alt0.jpg" class="img-fluid img-thumbnail" alt="Alteration screenshot 1">
-                                    <br><br>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/alt1.jpg" class="img-fluid img-thumbnail" alt="Alteration screenshot 2">
-                                    <br><br>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p class="card-text">
-                                        Alteration is a survival-horror game created as a final project for a Computer Graphics course that I took during my last year at Georgia Southern. 
-                                        This was a group project with <a target="_blank" class="text-secondary" href="https://www.linkedin.com/in/jareddean5/">Jared Dean</a> and Najee 
-                                        Simmons. We created this game in <mark>Unity</mark> and used <mark>C#</mark> for all of the scripting.
-                                    </p>
-                                    <p class="card-text">
-                                        This game was a lot of fun to create. It contains five main chambers and a maze, each with their own puzzles and challenges to overcome. The 
-                                        very first room that the player spawns in (essentially just four walls with torches and a door) was built using a Unity tutorial, but the rest 
-                                        of the game was created by attempting to replicate features from games that the other group members and I had played in the past. This was the most 
-                                        fun aspect of this project as we had to come up with logic to create monster mechanics, weapons, checkpoints, the pause menu, and more.
-                                    </p>
-                                    <p class="card-text">
-                                        A demo of this game is available 
-                                        <a target="_blank" class="text-secondary" href="https://drive.google.com/file/d/1U8vpN18wPmzu-SrYNrchMPfvghs3jSG7/view?usp=sharing">here</a> 
-                                        and you can view the source code 
-                                        <a target="_blank" class="text-secondary" href="https://github.com/dmenear/SurvivalHorror">here</a>. This project was a little on the large side 
-                                        and we weren't able to hammer out all of the bugs before submission, but it's still functional from beginning to end. It was compiled to run on 
-                                        Windows and will not execute on other operating systems. You can run it by extracting the ZIP file and executing gametest.exe. If you decide to 
-                                        try it out, good luck, you'll need it.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title">
-                                        Gaming Control Using Gaze and Gestures (2018)
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/ufc0.jpg" class="img-fluid img-thumbnail" alt="Fruit cutter screenshot 1">
-                                    <br><br>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/ufc1.jpg" class="img-fluid img-thumbnail" alt="Fruit cutter screenshot 2">
-                                    <br><br>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p class="card-text">
-                                        Gaming Control Using Gaze and Gestures was the capstone project for the Software Engineering course I took during my last year at Georgia Southern. 
-                                        This was a group project with <a target="_blank" class="text-secondary" href="https://www.linkedin.com/in/daniel-burer-452963118/">Danny Burer</a>, 
-                                        <a target="_blank" class="text-secondary" href="https://www.linkedin.com/in/rosalie-fragnito-7556bb149/">Rosalie Fragnito</a>, 
-                                        <a target="_blank" class="text-secondary" href="https://www.linkedin.com/in/john-lillard-671688108/">John Lillard</a>, and Kaden Graham. We created 
-                                        this project in <mark>Unity</mark> and used <mark>C#</mark> for all of the scripting.
-                                    </p>
-                                    <p class="card-text">
-                                        The purpose of this project was to expose the members of the group to the <abbr title="Software Development Life Cycle">SDLC</abbr> while working 
-                                        with a client, Dr. Pradipta De (another professor at the University). Dr. De was curious about the possibility of using eye tracking hardware 
-                                        to monitor the attentiveness of students during lectures and one of our goals during the course of this project was to evaluate the feasibility 
-                                        of this idea. We completed several deliverables throughout the life of this project including a feasibility report, a software requirements and 
-                                        specification document, a software design document, a software testing and quality assurance document, and a final notebook tying it all together.
-                                    </p>
-                                    <p class="card-text">
-                                        For this project, we were supplied with a 
-                                        <a target="_blank" class="text-secondary" href="https://gaming.tobii.com/product/tobii-eye-tracker-4c/">Tobii 4C Eye Tracker</a> which has a 
-                                        <a target="_blank" class="text-secondary" href="https://developer.tobii.com/tobii-unity-sdk/">Unity 
-                                        <abbr title="Software Development Kit">SDK</abbr></a> that we used to implement eye controls into an open source game that we found, a 
-                                        recreation of the popular app Fruit Ninja. The game was pretty basic and we ended up adding several features to it on top of new controls 
-                                        (bombs, different fruit, <abbr title="Quality of Life">QoL</abbr> improvements, an advanced replay system connected to an 
-                                        <abbr title="Amazon Web Services">AWS</abbr> database instance, analytics, main menu / pause menu, etc.).
-                                    </p>
-                                    <p class="card-text">
-                                        Unfortunately due to the nature of the project, the source code is not available (stored in a private repository). The graphic we used at 
-                                        the Georgia Southern <abbr title="College of Engineering and Information Technology">CEIT</abbr> (now 
-                                        <abbr title="College of Engineering and Computing">CEC</abbr>) Annual Student Research Symposium, however, 
-                                        is available <a target="_blank" class="text-secondary" href="se_project.pdf">here</a>. 
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title">
-                                        Humans vs. Zombies at Georgia Southern Website (2014 - 2016)
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/hvz0.jpg" class="img-fluid img-thumbnail" alt="HvZ screenshot 1">
-                                    <br><br>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/hvz1.jpg" class="img-fluid img-thumbnail" alt="HvZ screenshot 2">
-                                    <br><br>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p class="card-text">
-                                        The website I created for Humans vs. Zombies at Georgia Southern was the first real web development project that I worked on. I was approached by 
-                                        the president of the organization and was asked if I could build a website that better fit their needs. I saw this as an opportunity to teach myself 
-                                        a new language and began creating the website that is still in use by the organization today. This project was created using <mark>PHP</mark>, 
-                                        <mark>JavaScript</mark>, <mark>HTML/CSS</mark>, and <mark>SQL</mark>. Since I saw this as a learning opportunity for PHP, I neglected to use any 
-                                        development frameworks when making this website.
-                                    </p>
-                                    <p class="card-text">
-                                        The website is designed to support the game, which is essentially a big game of tag. Each player has a "state" of human, zombie, or original 
-                                        zombie and is assigned a secret ID that they carry with them. The ID of a human is given to a zombie if that human is tagged, and the human then 
-                                        becomes a zombie. The content of the website is dependant on the state of the user. Everyone can see who is a human and who is a zombie, but zombies 
-                                        can enter player IDs into the site to "kill" a human, and humans can send out text blasts requesting help if they are surrounded by zombies. There 
-                                        is also state-specific information distributed by the moderators of the game that only players of the correct state can see on the website.
-                                    </p>
-                                    <p class="card-text">
-                                        There is also an administration panel that only game moderators can see. This panel allows moderators to send email blasts, update the state of the 
-                                        game, post news articles, change the state of players, send email blasts, control "missions" using text blasts, and much more.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title">
-                                        JavaScript Brick Breaker (2019)
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/bb0.jpg" class="img-fluid img-thumbnail" alt="Brick Breaker screenshot 1">
-                                    <br><br>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <img draggable="false" src="images/bb1.jpg" class="img-fluid img-thumbnail" alt="Brick Breaker screenshot 2">
-                                    <br><br>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p class="card-text">
-                                        This project was a short refresher on JavaScript and an interesting look into the way people make games using JavaScript as this was something I 
-                                        had never been exposed to. Check out the demo <a class="text-secondary" href="brickbreaker/">here</a>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br><br>
-            <div class="row">
-                <div class="alert alert-warning col-8 offset-2 text-center">
-                    <strong>Hey there!</strong> This page is a living document. It will grow and change as I do. Come back later to see what's new!
+                    <br><br>
+                    <br>
                 </div>
             </div>
         </div>
