@@ -30,9 +30,11 @@
                 function blinkCursor() {
                     if(cursorHidden) {
                         $("#cursor").text("_");
+                        $("#cursor").css("color", "#00FF00");
                         cursorHidden = false;
                     } else {
                         $("#cursor").text("⠀");
+                        $("#cursor").css("color", "#111111");
                         cursorHidden = true;
                     }
                 }
@@ -69,7 +71,7 @@
                 function moveCursor(fromMessage, toWrapper) {
                     messagePlaying = true;
                     $("#cursor").appendTo(toWrapper);
-                    $(fromMessage).append("⠀");
+                    $(fromMessage).append('<span id="endspace">⠀</span>');
                     $(toWrapper).show();
                 }
 
