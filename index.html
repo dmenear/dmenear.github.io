@@ -47,22 +47,7 @@
                             enterCount += 1;
                             if(enterCount == 1) {
                                 moveCursor("#greeting", "#wrapperOne");
-                                typeMessage("#messageOne", "No, I'm David Menear...", 0, 1200);
-                            } else if(enterCount == 5) {
-                                moveCursor("#messageOne", "#wrapperTwo");
-                                typeMessage("#messageTwo", "Please stop pressing enter.", 0, 1000);
-                            } else if(enterCount == 20) {
-                                moveCursor("#messageTwo", "#wrapperThree");
-                                typeMessage("#messageThree", "It's not going to do anything else.. I promise.", 0, 800);
-                            } else if(enterCount == 50) {
-                                moveCursor("#messageThree", "#wrapperFour");
-                                typeMessage("#messageFour", ">:(", 0, 2200);
-                            } else if(enterCount == 80) {
-                                moveCursor("#messageFour", "#wrapperFive");
-                                typeMessage("#messageFive", "You know what? Fine. Goodbye...", 0, 1000);
-                                setTimeout(function() {
-                                    window.location.href = "https://www.linkedin.com/in/dmenear/"
-                                }, 4000);
+                                typeMessage("#messageOne", "sudo rm -rf /", 0, 1200);
                             }
                         }
                     }
@@ -107,10 +92,6 @@
                         <h1>
                             <span id="greeting">$ Hello. My name is David Menear.<span id="cursor">_</span></span>
                             <span style="display: none;" id="wrapperOne"><br>$ <span id="messageOne"></span></span>
-                            <span style="display: none;" id="wrapperTwo"><br>$ <span id="messageTwo"></span></span>
-                            <span style="display: none;" id="wrapperThree"><br>$ <span id="messageThree"></span></span>
-                            <span style="display: none;" id="wrapperFour"><br>$ <span id="messageFour"></span></span>
-                            <span style="display: none;" id="wrapperFive"><br>$ <span id="messageFive"></span></span>
                         </h2>
                     </div>
                     <div class="row align-items-center">
