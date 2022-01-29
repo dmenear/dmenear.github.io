@@ -60,19 +60,19 @@
                                     rollingTimeout = 500;
                                     setTimeout(function() { $("#profilePic").attr("src", "error") }, rollingTimeout);
 
-                                    rollingTimeout += 1000;
+                                    rollingTimeout += 1500;
                                     setTimeout(function() {
                                         $(".socialLink").each(function() {
                                             $(this).html('<img src="error" />');
                                         });
                                     }, rollingTimeout);
 
-                                    rollingTimeout += 500;
+                                    rollingTimeout += 2000;
                                     setTimeout(function() {
                                         $("#description").text($("#description").text().replaceAll(/\S/g, "?"));
                                     }, rollingTimeout);
                                     
-                                    rollingTimeout += 1000;
+                                    rollingTimeout += 1500;
                                     for(var i = 0; i < 10; i++) {
                                         rollingTimeout += 200;
                                         setTimeout(function() {
@@ -81,7 +81,7 @@
                                         }, rollingTimeout);
                                     }
 
-                                    rollingTimeout += 1500;
+                                    rollingTimeout += 2000;
                                     setTimeout(function() {
                                         $("#contentBody").html("");
                                     }, rollingTimeout);
