@@ -24,7 +24,7 @@
                 $('[data-toggle="tooltip"]').tooltip()
             })
             $( document ).ready(function() {
-                setInterval(blinkCursor, 500);
+                cursorBlinkInterval = setInterval(blinkCursor, 500);
 
                 var cursorHidden = false;
                 function blinkCursor() {
@@ -40,27 +40,93 @@
                 }
 
                 var enterCount = 0;
+                var lineCount = 0;
                 var messagePlaying = false;
+                var prevMessage = "#greeting";
+
                 $("body").on("keydown", function(e) {
                     if(e.keyCode == 13) {
                         if(!messagePlaying) {
                             enterCount += 1;
                             if(enterCount == 1) {
-                                moveCursor("#greeting", "#wrapperOne");
-                                typeMessage("#messageOne", "sudo rm -rf /", 0, 1200);
+                                newLine(false);
+                                typeMessage("sudo rm -rf /", 0, 1200);
+                            }
+                            if(enterCount == 2) {
+                                newLine(false);
+                                setTimeout(function() {
+                                    clearInterval(cursorBlinkInterval);
+
+                                    rollingTimeout = 500;
+                                    setTimeout(function() { $("#profilePic").attr("src", "error") }, rollingTimeout);
+
+                                    rollingTimeout += 1000;
+                                    setTimeout(function() {
+                                        $(".socialLink").each(function() {
+                                            $(this).html('<img src="error" />');
+                                        });
+                                    }, rollingTimeout);
+
+                                    rollingTimeout += 500;
+                                    setTimeout(function() {
+                                        $("#description").text($("#description").text().replaceAll(/\S/g, "?"));
+                                    }, rollingTimeout);
+                                    
+                                    rollingTimeout += 1000;
+                                    for(var i = 0; i < 10; i++) {
+                                        rollingTimeout += 200;
+                                        setTimeout(function() {
+                                            newLine(true);
+                                            $("#message" + String(lineCount)).text("<< CRITICAL ERROR: SYSTEM FILES CORRUPTED! >>")
+                                        }, rollingTimeout);
+                                    }
+
+                                    rollingTimeout += 1500;
+                                    setTimeout(function() {
+                                        $("#contentBody").html("");
+                                    }, rollingTimeout);
+
+                                    rollingTimeout += 2000;
+                                    setTimeout(function() {
+                                        $("#consoleLines").html("");
+                                        newLine(true);
+                                        typeMessage("Shutting down................", 0, 1500);
+                                    }, rollingTimeout);
+
+                                    rollingTimeout += 3000;
+                                    setTimeout(function() {
+                                        window.location.replace("https://www.linkedin.com/in/dmenear/");
+                                    }, rollingTimeout);
+
+                                }, 2000);
                             }
                         }
                     }
                 });
 
-                function moveCursor(fromMessage, toWrapper) {
+                function newLine(isOutput) {
                     messagePlaying = true;
-                    $("#cursor").appendTo(toWrapper);
-                    $(fromMessage).append('<span id="endspace">⠀</span>');
-                    $(toWrapper).show();
+                    lineCount += 1;
+                    var newLine = '<br><span id="wrapper' + String(lineCount) + '">';
+                    if(!isOutput) {
+                        newLine += "$ ";
+                        $("#cursor").hide();
+                    } else {
+                        $("#cursor").show();
+                    }
+                    newLine += '<span id="message' + String(lineCount) + '"></span></span>';
+                    $("#consoleLines").append(newLine);
+                    
+                    $("#cursor").appendTo("#wrapper" + String(lineCount));
+
+                    if(lineCount > 1) {
+                        $(prevMessage).append('<span id="endspace">⠀</span>');
+                    }
+
+                    prevMessage = "#message" + String(lineCount);
                 }
 
-                function typeMessage(target, message, index, timeout) {
+                function typeMessage(message, index, timeout) {
                     setTimeout(function() {
                         var charToType = message.charAt(index);
                         if(charToType == ",") {
@@ -70,10 +136,10 @@
                         } else {
                             timeout = 40;
                         }
-                        $(target).append(charToType);
+                        $("#message" + String(lineCount)).append(charToType);
                         index += 1;
                         if(index < message.length) {
-                            typeMessage(target, message, index, timeout);
+                            typeMessage(message, index, timeout);
                         } else {
                             messagePlaying = false;
                         }
@@ -88,40 +154,42 @@
             <div class="row">
                 <div class="offset-xl-2 offset-lg-1 offset-md-0"></div>
                 <div class="col-xl-8 col-lg-10 col-md-12">
-                    <div class="jumbotron">
+                    <div id="consoleHeader" class="jumbotron">
                         <h1>
-                            <span id="greeting">$ Hello. My name is David Menear.<span id="cursor">_</span></span>
-                            <span style="display: none;" id="wrapperOne"><br>$ <span id="messageOne"></span></span>
+                            <span id="consoleLines">
+                                <span id="greeting">$ Hello. My name is David Menear.<span id="cursor">_</span></span>
+                            </span>
                         </h2>
                     </div>
-                    <div class="row align-items-center">
-                        <div class="col-lg-3 col-md-4 col-sm-12 text-center" style="padding: 10px 15px;">
-                            <a target="_blank" href="https://www.linkedin.com/in/dmenear/">
-                                <img src="images/0.jpg" draggable="false" class="rounded-circle img-fluid" alt="Picture of me :)"/>
-                            </a>
+                    <div id="contentBody">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3 col-md-4 col-sm-12 text-center" style="padding: 10px 15px;">
+                                <a target="_blank" href="https://www.linkedin.com/in/dmenear/">
+                                    <img id="profilePic" src="images/0.jpg" draggable="false" class="rounded-circle img-fluid"/>
+                                </a>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-12">
+                                <span id="description" style="font-size: 1.15rem; line-height: 1.7;">
+                                        I'm a software engineer currently living and working in San Diego, CA. I graduated from Georgia Southern University in 2018 with a bachelor's degree in 
+                                        Computer Science. Although I have worked with many different languages and technologies, I am most comfortable with Java and 
+                                        Python. I've loved software development since I was very young, and I'm always working on one side project or another. You can see more information 
+                                        about me at the links below. Please feel free to reach out to me at <a href="mailto:david@menear.dev">david@menear.dev</a>.
+                                </span>
+                            </div>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-12">
-                            <span style="font-size: 1.15rem; line-height: 1.7;">
-                                    I'm a software engineer currently living and working in San Diego, CA. I graduated from Georgia Southern University in 2018 with a bachelor's degree in 
-                                    Computer Science. Although I have worked with many different languages and technologies, I am most comfortable with Java and 
-                                    Python. I've loved software development since I was very young, and I'm always working on one side project or another. You can see more information 
-                                    about me at the links below. Please feel free to reach out to me at <a href="mailto:david@menear.dev">david@menear.dev</a>.
-                            </span>
+                        <br>
+                        <div class="row align-items-center">
+                            <div class="col-sm-3 col-xs-12"><hr></div>
+                            <div class="col-sm-6 col-xs-12 d-flex justify-content-around">
+                                <a target="_blank" class="socialLink" href="https://github.com/dmenear"><span data-toggle="tooltip" data-placement="bottom" title="GitHub" style="font-size: 3.0rem; color: #6e5494;" class="cib-github"></span></a>
+                                <a target="_blank" class="socialLink" href="https://www.linkedin.com/in/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LinkedIn" style="font-size: 3.0rem; color: #0077B5;" class="cib-linkedin"></span></a>
+                                <a target="_blank" class="socialLink" href="https://leetcode.com/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LeetCode" style="font-size: 3.0rem; color: #ffffff;" class="cib-leetcode"></span></a>
+                                <a target="_blank" class="socialLink" href="https://www.hackerrank.com/davidlmenear"><span data-toggle="tooltip" data-placement="bottom" title="HackerRank" style="font-size: 3.0rem; color: #28ba5a;" class="cib-hackerrank"></span></a> 
+                            </div>
+                            <div class="col-sm-3 col-xs-12"><hr></div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row align-items-center">
-                        <div class="col-sm-3 col-xs-12"><hr></div>
-                        <div class="col-sm-6 col-xs-12 d-flex justify-content-around">
-                            <a target="_blank" href="https://github.com/dmenear"><span data-toggle="tooltip" data-placement="bottom" title="GitHub" style="font-size: 3.0rem; color: #6e5494;" class="cib-github"></span></a>
-                            <a target="_blank" href="https://www.linkedin.com/in/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LinkedIn" style="font-size: 3.0rem; color: #0077B5;" class="cib-linkedin"></span></a>
-                            <a target="_blank" href="https://leetcode.com/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LeetCode" style="font-size: 3.0rem; color: #ffffff;" class="cib-leetcode"></span></a>
-                            <a target="_blank" href="https://www.hackerrank.com/davidlmenear"><span data-toggle="tooltip" data-placement="bottom" title="HackerRank" style="font-size: 3.0rem; color: #28ba5a;" class="cib-hackerrank"></span></a> 
-                        </div>
-                        <div class="col-sm-3 col-xs-12"><hr></div>
-                    </div>
-                    <br><br>
-                    <br>
+                    <br><br><br>
                 </div>
             </div>
         </div>
