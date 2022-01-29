@@ -77,7 +77,7 @@
                                         rollingTimeout += 200;
                                         setTimeout(function() {
                                             newLine(true);
-                                            $("#message" + String(lineCount)).text("<< CRITICAL ERROR: SYSTEM FILES CORRUPTED! >>")
+                                            $("#message" + String(lineCount)).text("CRITICAL ERROR: SYSTEM FILES CORRUPTED!")
                                         }, rollingTimeout);
                                     }
 
@@ -110,9 +110,9 @@
                     var newLine = '<br><span id="wrapper' + String(lineCount) + '">';
                     if(!isOutput) {
                         newLine += "$ ";
-                        $("#cursor").hide();
-                    } else {
                         $("#cursor").show();
+                    } else {
+                        $("#cursor").hide();
                     }
                     newLine += '<span id="message' + String(lineCount) + '"></span></span>';
                     $("#consoleLines").append(newLine);
