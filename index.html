@@ -73,11 +73,11 @@
                                     }, rollingTimeout);
                                     
                                     rollingTimeout += 1500;
-                                    for(var i = 0; i < 10; i++) {
-                                        rollingTimeout += 200;
+                                    for(var i = 0; i < 4; i++) {
+                                        rollingTimeout += 400;
                                         setTimeout(function() {
                                             newLine(true);
-                                            $("#message" + String(lineCount)).text("CRITICAL ERROR: SYSTEM FILES CORRUPTED!")
+                                            $("#message" + String(lineCount)).text("<ERROR 0xFE12AC> MISSING SYSTEM LIBRARY")
                                         }, rollingTimeout);
                                     }
 
