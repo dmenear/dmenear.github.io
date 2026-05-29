@@ -1,199 +1,219 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>David Menear - Software Developer</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="Hello! My name is David Menear and I'm a software engineer. Check this page out to learn more about me.">
-        <meta name="author" content="David Menear">
-        <meta name="keywords" content="David Menear, David, Dave, Menear, San Diego, Spectrum, Kearny Mesa, Escondido, Encinitas, California, CA, SD, Software, Engineer, Developer, Software Engineer, Software Developer, Coding, Programmer, Coder, Programming, Java, Kotlin, GraphQL, AWS, Kubernetes, Intuit, TurboTax, QuickBooks, Credit Karma, MailChimp, Python, Bachelor's, Degree, Bachelors, Bachelor's Degree, Computer Science, Georgia Southern University, Georgia Southern, GaSou, Georgia Southern, Talent, Best">
-        <meta name="robots" content="index, follow">
-        <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
-        <link rel="shortcut icon" href="favicon.ico">
-        <link rel="manifest" href="site.webmanifest">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link rel="stylesheet" href="coreui-icons/css/all.css">
-        <link rel="stylesheet" href="custom.css">
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script>
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            })
-            $( document ).ready(function() {
-                cursorBlinkInterval = setInterval(blinkCursor, 500);
-
-                var cursorHidden = false;
-                function blinkCursor() {
-                    if(cursorHidden) {
-                        $("#cursor").text("_");
-                        $("#cursor").css("color", "#00FF00");
-                        cursorHidden = false;
-                    } else {
-                        $("#cursor").text("⠀");
-                        $("#cursor").css("color", "#111111");
-                        cursorHidden = true;
-                    }
-                }
-
-                var enterCount = 0;
-                var lineCount = 0;
-                var messagePlaying = false;
-                var prevMessage = "#greeting";
-
-                $("body").on("keydown", function(e) {
-                    if(e.keyCode == 13) {
-                        if(!messagePlaying) {
-                            enterCount += 1;
-                            if(enterCount == 1) {
-                                newLine(false);
-                                typeMessage("sudo rm -rf /", 0, 1200);
-                            }
-                            if(enterCount == 2) {
-                                newLine(false);
-                                setTimeout(function() {
-                                    clearInterval(cursorBlinkInterval);
-
-                                    rollingTimeout = 500;
-                                    setTimeout(function() { $("#profilePic").attr("src", "error") }, rollingTimeout);
-
-                                    rollingTimeout += 1500;
-                                    setTimeout(function() {
-                                        $(".socialLink").each(function() {
-                                            $(this).html('<img src="error" />');
-                                        });
-                                    }, rollingTimeout);
-
-                                    rollingTimeout += 2000;
-                                    setTimeout(function() {
-                                        $("#description").text($("#description").text().replaceAll(/\S/g, "?"));
-                                    }, rollingTimeout);
-                                    
-                                    rollingTimeout += 1500;
-                                    for(var i = 0; i < 4; i++) {
-                                        rollingTimeout += 400;
-                                        setTimeout(function() {
-                                            newLine(true);
-                                            $("#message" + String(lineCount)).text("<ERROR 0xFE12AC> MISSING SYSTEM LIBRARY")
-                                        }, rollingTimeout);
-                                    }
-
-                                    rollingTimeout += 2000;
-                                    setTimeout(function() {
-                                        $("#contentBody").html("");
-                                    }, rollingTimeout);
-
-                                    rollingTimeout += 2000;
-                                    setTimeout(function() {
-                                        $("#consoleLines").html("");
-                                        newLine(true);
-                                        typeMessage("Shutting down................", 0, 1500);
-                                    }, rollingTimeout);
-
-                                    rollingTimeout += 3000;
-                                    setTimeout(function() {
-                                        window.location.replace("https://www.linkedin.com/in/dmenear/");
-                                    }, rollingTimeout);
-
-                                }, 2000);
-                            }
-                        }
-                    }
-                });
-
-                function newLine(isOutput) {
-                    messagePlaying = true;
-                    lineCount += 1;
-                    var newLine = '<br><span id="wrapper' + String(lineCount) + '">';
-                    if(!isOutput) {
-                        newLine += "$ ";
-                        $("#cursor").show();
-                    } else {
-                        $("#cursor").hide();
-                    }
-                    newLine += '<span id="message' + String(lineCount) + '"></span></span>';
-                    $("#consoleLines").append(newLine);
-                    
-                    $("#cursor").appendTo("#wrapper" + String(lineCount));
-
-                    if(lineCount > 1) {
-                        $(prevMessage).append('<span id="endspace">⠀</span>');
-                    }
-
-                    prevMessage = "#message" + String(lineCount);
-                }
-
-                function typeMessage(message, index, timeout) {
-                    setTimeout(function() {
-                        var charToType = message.charAt(index);
-                        if(charToType == ",") {
-                            timeout = 400;
-                        } else if(charToType == ".") {
-                            timeout = 200;
-                        } else {
-                            timeout = 40;
-                        }
-                        $("#message" + String(lineCount)).append(charToType);
-                        index += 1;
-                        if(index < message.length) {
-                            typeMessage(message, index, timeout);
-                        } else {
-                            messagePlaying = false;
-                        }
-                    }, timeout);
-                }
-            });
-        </script>
-    </head>
-    <body>
-        <div id="top" class="container-fluid">
-            <br>
-            <div class="row">
-                <div class="offset-xl-2 offset-lg-1 offset-md-0"></div>
-                <div class="col-xl-8 col-lg-10 col-md-12">
-                    <div id="consoleHeader" class="jumbotron">
-                        <h1>
-                            <span id="consoleLines">
-                                <span id="greeting">$ Hello. My name is David Menear.<span id="cursor">_</span></span>
-                            </span>
-                        </h2>
-                    </div>
-                    <div id="contentBody">
-                        <div class="row align-items-center">
-                            <div class="col-lg-3 col-md-4 col-sm-12 text-center" style="padding: 10px 15px;">
-                                <a target="_blank" href="https://www.linkedin.com/in/dmenear/">
-                                    <img id="profilePic" src="images/0.jpg" draggable="false" class="rounded-circle img-fluid"/>
-                                </a>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-12">
-                                <span id="description" style="font-size: 1.15rem; line-height: 1.7;">
-                                        I'm a senior software engineer from Atlanta now living in San Diego. I'm privileged enough to work with an incredibly talented group of engineers at 
-                                        <a target="_blank" href="https://www.intuit.com/">Intuit</a> making sign in happen reliably at scale for hundreds of millions of users across services 
-                                        like TurboTax and Quickbooks. I first started writing code when I was just a kid and I was lucky enough to be able to turn that passion into a 
-                                        fulfilling career. I'm a certified AWS engineer and have worked with a vast array of different tech, but I tend to enjoy backend development the most. 
-                                        If you'd like to learn a little more about me, check out the links below or you can shoot me an email at <a href="mailto:david@menear.dev">david@menear.dev</a>. 
-                                        Thanks for stopping by!
-                                </span>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row align-items-center">
-                            <div class="col-sm-3 col-xs-12"><hr></div>
-                            <div class="col-sm-6 col-xs-12 d-flex justify-content-around">
-                                <a target="_blank" class="socialLink" href="https://github.com/dmenear"><span data-toggle="tooltip" data-placement="bottom" title="GitHub" style="font-size: 3.0rem; color: #6e5494;" class="cib-github"></span></a>
-                                <a target="_blank" class="socialLink" href="https://www.linkedin.com/in/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LinkedIn" style="font-size: 3.0rem; color: #0077B5;" class="cib-linkedin"></span></a>
-                                <a target="_blank" class="socialLink" href="https://leetcode.com/dmenear/"><span data-toggle="tooltip" data-placement="bottom" title="LeetCode" style="font-size: 3.0rem; color: #ffffff;" class="cib-leetcode"></span></a>
-                                <a target="_blank" class="socialLink" href="https://www.hackerrank.com/davidlmenear"><span data-toggle="tooltip" data-placement="bottom" title="HackerRank" style="font-size: 3.0rem; color: #28ba5a;" class="cib-hackerrank"></span></a> 
-                            </div>
-                            <div class="col-sm-3 col-xs-12"><hr></div>
-                        </div>
-                    </div>
-                    <br><br><br>
-                </div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>David Menear &mdash; Software Engineer</title>
+    <meta name="description" content="Senior software engineer in San Diego, working on identity and authentication infrastructure at Intuit.">
+    <meta name="author" content="David Menear">
+    <meta name="robots" content="index, follow">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="stylesheet" href="coreui-icons/css/all.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="custom.css">
+    <!-- ↑↑↓↓←→←→BA -->
+</head>
+<body>
+    <nav class="topnav">
+        <div class="nav-inner">
+            <a href="#home" class="nav-brand">david@menear:~$</a>
+            <div class="nav-links">
+                <a href="#about">./about</a>
+                <a href="#work">./work</a>
+                <a href="#experience">./experience</a>
+                <a href="#stack">./stack</a>
+                <a href="#contact">./contact</a>
             </div>
         </div>
-    </body>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="terminal">
+                <div class="terminal-bar">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="terminal-title">~/davidmenear &mdash; zsh</span>
+                </div>
+                <div class="terminal-body">
+                    <p id="consoleLines"><span id="greeting">$ Hello. My name is David Menear.<span id="cursor">_</span></span></p>
+                </div>
+            </div>
+            <p class="hero-tagline">Senior software engineer &middot; Identity &amp; distributed systems &middot; San Diego, CA</p>
+        </section>
+
+        <section id="about" class="section">
+            <h2 class="section-title"><span class="prompt">$</span> cat about.txt</h2>
+            <div class="about-grid">
+                <div class="about-photo">
+                    <img id="profilePic" src="images/profile.jpg" alt="David Menear" draggable="false">
+                </div>
+                <div class="about-text" id="description">
+                    <p>I'm a senior software engineer from Atlanta, now living in San Diego. I work at Intuit on the team that handles sign in for TurboTax, QuickBooks, and Credit Karma. Millions of people depend on us getting it right, especially during tax season.</p>
+                    <p>I started writing code as a kid and got lucky enough to make a career out of it. I mostly enjoy backend work: distributed systems, identity infrastructure, the kind of stuff where correctness really matters.</p>
+                    <p>If you want to learn more, check the links below or shoot me an email at <a href="mailto:david@menear.dev">david@menear.dev</a>. Thanks for stopping by.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="work" class="section">
+            <h2 class="section-title"><span class="prompt">$</span> ls -lh ./work</h2>
+            <div class="work-grid">
+
+                <article class="work-card work-intuit">
+                    <p class="work-path">~/<span class="work-company">intuit</span>/sim-auth</p>
+                    <span class="work-tag">2026 &middot; in progress</span>
+                    <h3>SIM-based authenticator</h3>
+                    <p>Tech lead on a new SIM-based authenticator for Intuit sign in. Uses cryptographic SIM possession proof for seamless, phishing-resistant authentication. No OTP, no SMS, no carrier network required. Started as a hackathon project; targeting MVP rollout this summer.</p>
+                    <div class="work-tech"><span>Identity</span><span>SIM crypto</span><span>Kotlin</span><span>Cross-team</span></div>
+                </article>
+
+                <article class="work-card work-intuit">
+                    <p class="work-path">~/<span class="work-company">intuit</span>/mdl-recovery</p>
+                    <span class="work-tag">2025</span>
+                    <h3>mDL account recovery</h3>
+                    <p>Led the design and rollout of a mobile driver's license account recovery authenticator, from prototype to GA in one quarter. Launched first in California and is now live across several states.</p>
+                    <div class="work-tech"><span>Identity</span><span>Mobile</span><span>Kotlin</span></div>
+                </article>
+
+                <article class="work-card work-intuit">
+                    <p class="work-path">~/<span class="work-company">intuit</span>/recovery-expansion</p>
+                    <span class="work-tag">2026</span>
+                    <h3>Recovery for more products</h3>
+                    <p>Drove a cross-team initiative to extend identity-proofing-based account recovery to QuickBooks and other Intuit offerings, opening up a recovery pathway for users who previously had none.</p>
+                    <div class="work-tech"><span>Identity</span><span>Cross-team</span><span>Architecture</span></div>
+                </article>
+
+                <article class="work-card work-intuit">
+                    <p class="work-path">~/<span class="work-company">intuit</span>/ck-tt-federation</p>
+                    <span class="work-tag">2024 &mdash; 2025</span>
+                    <h3>Credit Karma &times; TurboTax federation</h3>
+                    <p>Delivered federation between Credit Karma and TurboTax, removing key customer drop-off points and improving login success for millions of users during peak tax season.</p>
+                    <div class="work-tech"><span>Identity</span><span>Federation</span><span>Cross-team</span></div>
+                </article>
+
+                <article class="work-card work-intuit">
+                    <p class="work-path">~/<span class="work-company">intuit</span>/sso-modernization</p>
+                    <span class="work-tag">2022 &mdash; 2024</span>
+                    <h3>Sign-in front door, modernized</h3>
+                    <p>Migrated Intuit's sign-in orchestration from a Java/Spring monolith to a stateless Kotlin microservice on AWS with a GraphQL client-facing API. Now serves as the entry point for TurboTax, QuickBooks, and Credit Karma sign in, holding 99.99%+ availability through peak tax season.</p>
+                    <div class="work-tech"><span>Kotlin</span><span>GraphQL</span><span>AWS</span><span>Kubernetes</span></div>
+                </article>
+
+                <article class="work-card work-pvm">
+                    <p class="work-path">~/<span class="work-company">pvm</span>/cdc-pipelines</p>
+                    <span class="work-tag">2021 &mdash; 2022</span>
+                    <h3>CDC outbreak-tracing pipelines</h3>
+                    <p>Built PySpark pipelines in Palantir Foundry with CDC epidemiologists (NCEZID) to accelerate the identification and tracing of foodborne illness outbreak sources.</p>
+                    <div class="work-tech"><span>PySpark</span><span>Palantir Foundry</span><span>Python</span></div>
+                </article>
+
+                <article class="work-card work-pvm">
+                    <p class="work-path">~/<span class="work-company">pvm</span>/fiserv-backend</p>
+                    <span class="work-tag">2021 &mdash; 2022</span>
+                    <h3>Fintech analytics backend</h3>
+                    <p>Built and modernized AWS-hosted Java/Spring APIs for a major fintech analytics product, consolidating legacy Scala and CoffeeScript logic into a maintainable standardized backend. Authored architecture PoCs including a serverless-leaning proposal for Fiserv.</p>
+                    <div class="work-tech"><span>Java</span><span>Spring</span><span>AWS</span><span>Architecture</span></div>
+                </article>
+
+                <article class="work-card work-cedar">
+                    <p class="work-path">~/<span class="work-company">cedar</span>/statement-pipeline</p>
+                    <span class="work-tag">2019 &mdash; 2021</span>
+                    <h3>Statement-generation pipeline</h3>
+                    <p>Re-architected a monthly statement-generation pipeline for 2M banking customers. Redesigned the single-threaded process for parallel execution, cutting runtime from ~2 days to a few hours and resolving a major client escalation.</p>
+                    <div class="work-tech"><span>Java</span><span>Batch processing</span><span>Performance</span></div>
+                </article>
+
+            </div>
+        </section>
+
+        <section id="experience" class="section">
+            <h2 class="section-title"><span class="prompt">$</span> history --career</h2>
+            <ol class="timeline">
+                <li>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Aug 2024 &mdash; present</span>
+                        <h3>Senior Software Engineer &middot; Intuit</h3>
+                        <p>Identity &amp; Authentication. Tech lead on new authenticator projects. Scrum master across two teams.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Jun 2022 &mdash; Aug 2024</span>
+                        <h3>Software Engineer &middot; Intuit</h3>
+                        <p>Sign-in orchestration. Owned authentication and recovery flows across SMS/Voice/Email OTP and identity-proofing pathways.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Mar 2021 &mdash; Jun 2022</span>
+                        <h3>Software Engineer (Forward Deployed) &middot; PVM Inc.</h3>
+                        <p>Built and modernized fintech AWS APIs. Wrote PySpark pipelines on Palantir Foundry with the CDC (NCEZID) supporting outbreak tracing.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Jun 2018 &mdash; Mar 2021</span>
+                        <h3>Software Engineer / SRE &middot; CEDAR CX Technologies</h3>
+                        <p>Modernized a mission-critical Java batch workflow service. Re-architected a statement-generation pipeline for 2M banking customers, taking runtime from days to hours.</p>
+                    </div>
+                </li>
+            </ol>
+        </section>
+
+        <section id="stack" class="section">
+            <h2 class="section-title"><span class="prompt">$</span> stack --print</h2>
+            <div class="stack-grid">
+                <div class="stack-group">
+                    <h3>Languages</h3>
+                    <ul><li>Kotlin</li><li>Java</li><li>Python</li><li>SQL</li><li>Bash</li><li>JavaScript</li></ul>
+                </div>
+                <div class="stack-group">
+                    <h3>Backend</h3>
+                    <ul><li>Spring Boot</li><li>GraphQL</li><li>REST</li><li>Microservices</li><li>Event-driven</li></ul>
+                </div>
+                <div class="stack-group">
+                    <h3>Cloud &amp; Infra</h3>
+                    <ul><li>AWS</li><li>Docker</li><li>Kubernetes</li><li>Linux</li><li>PostgreSQL</li></ul>
+                </div>
+                <div class="stack-group">
+                    <h3>Ops &amp; Observability</h3>
+                    <ul><li>Splunk</li><li>Wavefront</li><li>PagerDuty</li><li>Jenkins</li><li>Artifactory</li></ul>
+                </div>
+                <div class="stack-group">
+                    <h3>AI in Workflow</h3>
+                    <ul><li>Claude Code</li><li>Augment</li><li>Claude</li><li>MCP</li></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section section-contact">
+            <h2 class="section-title"><span class="prompt">$</span> echo $CONTACT</h2>
+            <p class="contact-line"><a href="mailto:david@menear.dev">david@menear.dev</a></p>
+            <div class="social-links">
+                <a target="_blank" rel="noopener" class="socialLink" href="https://github.com/dmenear" aria-label="GitHub" title="GitHub"><span class="cib-github"></span></a>
+                <a target="_blank" rel="noopener" class="socialLink" href="https://www.linkedin.com/in/dmenear/" aria-label="LinkedIn" title="LinkedIn"><span class="cib-linkedin"></span></a>
+                <a target="_blank" rel="noopener" class="socialLink" href="https://leetcode.com/dmenear/" aria-label="LeetCode" title="LeetCode"><span class="cib-leetcode"></span></a>
+                <a target="_blank" rel="noopener" class="socialLink" href="https://www.hackerrank.com/davidlmenear" aria-label="HackerRank" title="HackerRank"><span class="cib-hackerrank"></span></a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 David Menear</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
 </html>
