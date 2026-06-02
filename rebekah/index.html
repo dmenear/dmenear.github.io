@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>San Diego Trip Planner – June 2026</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root {
+  --bg: #f0f4f8; --white: #fff; --border: #e2e8f0; --text: #1a202c; --muted: #718096;
+  --radius: 8px; --sidebar-w: 290px; --day-w: 210px; --topbar-h: 48px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1); --shadow-md: 0 4px 10px rgba(0,0,0,0.14);
+  --z-side: 800; --z-modal: 900;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; font-size: 14px; }
+
+/* ── Topbar ── */
+.topbar { height: var(--topbar-h); background: #1a365d; color: white; display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0; z-index: var(--z-side); }
+.topbar h1 { font-size: 15px; font-weight: 600; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 11px; border-radius: 6px; cursor: pointer; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+.tb:hover { background: rgba(255,255,255,0.28); }
+.tb.on { background: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.65); }
+#lib-toggle { display: none; }
+
+/* ── Layout ── */
+.layout { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+/* ── Sidebar ── */
+.sidebar { width: var(--sidebar-w); flex-shrink: 0; background: white; border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.25s; }
+.sidebar-hd { display: none; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.sidebar-hd button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); line-height: 1; }
+.tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.tab { flex: 1; padding: 9px 4px; text-align: center; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab.on { color: #2b6cb0; border-bottom-color: #2b6cb0; }
+.search-bar { padding: 8px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.search-bar input { width: 100%; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; outline: none; }
+.search-bar input:focus { border-color: #4299e1; }
+.pool { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 5px; -webkit-overflow-scrolling: touch; }
+.sec-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 8px 4px 2px; }
+.side-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: calc(var(--z-side) - 1); }
+.side-backdrop.show { display: block; }
+
+/* ── Cards ── */
+.card { background: white; border: 1px solid var(--border); border-left: 4px solid #cbd5e0; border-radius: var(--radius); padding: 8px 10px; cursor: pointer; user-select: none; box-shadow: var(--shadow-sm); position: relative; transition: box-shadow .12s, transform .12s; }
+@media (min-width: 681px) { .card { cursor: grab; } .card:active { cursor: grabbing; } }
+.card:hover { box-shadow: var(--shadow-md); }
+.card.dragging { opacity: 0.4; }
+.card-hd { font-size: 12px; font-weight: 600; margin-bottom: 3px; line-height: 1.35; padding-right: 24px; }
+.card-sub { font-size: 11px; color: var(--muted); margin-bottom: 4px; display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.card-badges { display: flex; flex-wrap: wrap; gap: 3px; }
+.card-note { font-size: 10px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+.card-btns { position: absolute; top: 6px; right: 6px; display: flex; gap: 2px; }
+.cbtn { background: none; border: none; cursor: pointer; font-size: 11px; color: #a0aec0; padding: 2px 4px; border-radius: 4px; line-height: 1; }
+.cbtn:hover { background: #f7fafc; color: var(--text); }
+.cbtn.rm:hover { color: #e53e3e; background: #fff5f5; }
+.in-day { font-size: .92em; }
+.in-day .card-note { display: none; }
+.map-lnk { font-size: 10px; color: #4299e1; text-decoration: none; display: inline-block; margin-top: 4px; }
+.map-lnk:hover { text-decoration: underline; }
+
+/* Badge system */
+.b { font-size: 10px; padding: 1px 5px; border-radius: 4px; font-weight: 500; white-space: nowrap; line-height: 1.7; }
+.b-dm    { background: #fed7d7; color: #c53030; }
+.b-walk  { background: #e9f5e9; color: #276749; }
+.b-dur   { background: #ebf4ff; color: #2c5282; }
+.b-kids  { background: #fffff0; color: #744210; }
+.b-safe  { background: #d1fae5; color: #065f46; }
+.b-warn  { background: #fef3c7; color: #92400e; }
+.b-price { background: #f3e8ff; color: #6b21a8; }
+.b-nokid { background: #feebc8; color: #9c4221; }
+
+/* Activity type colors */
+.t-animals    { border-left-color: #48bb78; }
+.t-beach      { border-left-color: #4299e1; }
+.t-museum     { border-left-color: #9f7aea; }
+.t-theme_park { border-left-color: #ed8936; }
+.t-outdoor    { border-left-color: #68d391; }
+.t-culture    { border-left-color: #f6ad55; }
+.t-cruise     { border-left-color: #0bc5ea; }
+.t-sports     { border-left-color: #fc8181; }
+
+/* Restaurant category colors */
+.c-seafood { border-left-color: #4299e1; }
+.c-asian   { border-left-color: #e53e3e; }
+.c-tacos   { border-left-color: #ed8936; }
+.c-cafe    { border-left-color: #975a16; }
+.c-dinner  { border-left-color: #9f7aea; }
+.c-casual  { border-left-color: #48bb78; }
+
+/* ── Planner ── */
+.planner-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.day-tabs-bar { display: none; flex-shrink: 0; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+.dtab { display: inline-block; padding: 9px 16px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; }
+.dtab.on { color: #2b6cb0; border-bottom-color: #2b6cb0; }
+.planner { flex: 1; overflow-x: auto; overflow-y: hidden; padding: 10px; display: flex; gap: 8px; -webkit-overflow-scrolling: touch; }
+.day-col { width: var(--day-w); flex-shrink: 0; display: flex; flex-direction: column; height: 100%; }
+.day-hd { padding: 7px 10px; border-radius: var(--radius) var(--radius) 0 0; color: white; text-align: center; flex-shrink: 0; }
+.day-hd .dn { font-size: 13px; font-weight: 600; }
+.day-hd .ds { font-size: 10px; opacity: .8; margin-top: 1px; }
+.day-hd .dm { font-size: 9px; background: rgba(255,255,255,.22); padding: 1px 5px; border-radius: 3px; display: inline-block; margin-top: 2px; }
+.d-mon .day-hd { background: #e53e3e; }
+.d-tue .day-hd { background: #dd6b20; }
+.d-wed .day-hd { background: #38a169; }
+.d-thu .day-hd { background: #3182ce; }
+.d-fri .day-hd { background: #805ad5; }
+.d-sat .day-hd { background: #b7791f; }
+.day-body { flex: 1; background: #f7fafc; border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-y: auto; padding: 5px; display: flex; flex-direction: column; gap: 5px; -webkit-overflow-scrolling: touch; transition: background .12s, border-color .12s; min-height: 80px; }
+.day-body.over { background: #ebf8ff; border-color: #63b3ed; }
+.empty-hint { text-align: center; color: #c0cad8; font-size: 11px; padding: 16px 8px; border: 2px dashed #e2e8f0; border-radius: 6px; pointer-events: none; }
+
+/* ── Map panel ── */
+.map-panel { height: 0; overflow: hidden; transition: height .25s; flex-shrink: 0; border-top: 1px solid var(--border); display: flex; flex-direction: column; position: relative; }
+.map-panel.open { height: 280px; }
+.map-resize-handle { height: 8px; background: #edf2f7; cursor: ns-resize; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-bottom: 1px solid var(--border); user-select: none; }
+.map-resize-handle::before { content: ''; width: 36px; height: 3px; background: #cbd5e0; border-radius: 2px; transition: background .12s; }
+.map-resize-handle:hover { background: #e2e8f0; }
+.map-resize-handle:hover::before { background: #a0aec0; }
+#leaflet-map { flex: 1; min-height: 0; }
+
+/* ── Detail modal ── */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: var(--z-modal); align-items: center; justify-content: center; padding: 16px; transition: bottom 0.25s; }
+.modal-bg.show { display: flex; }
+.modal-box { background: white; border-radius: 12px; max-width: 460px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,.3); -webkit-overflow-scrolling: touch; }
+.m-head { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; }
+.m-emoji { font-size: 28px; flex-shrink: 0; line-height: 1.1; }
+.m-title { flex: 1; }
+.m-title h2 { font-size: 16px; font-weight: 700; }
+.m-title .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.m-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); line-height: 1; padding: 2px; flex-shrink: 0; }
+.m-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.m-note { font-size: 13px; line-height: 1.55; }
+.m-add { border-top: 1px solid var(--border); padding-top: 10px; }
+.m-add p { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.day-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.dpick { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; background: white; }
+.dpick:hover:not(:disabled) { background: #ebf8ff; border-color: #63b3ed; }
+.dpick.placed { background: #e9f5e9; border-color: #68d391; color: #276749; }
+.dpick:disabled { opacity: .5; cursor: default; }
+
+/* ── Mobile ── */
+@media (max-width: 680px) {
+  #lib-toggle { display: block; }
+  .topbar h1 { font-size: 13px; }
+
+  .sidebar {
+    position: fixed;
+    top: var(--topbar-h); left: 0; bottom: 0;
+    width: 88%; max-width: 340px;
+    transform: translateX(-100%);
+    transition: transform 0.25s, bottom 0.25s;
+    z-index: var(--z-side);
+    border-right: 1px solid var(--border);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .side-backdrop { bottom: 0; transition: bottom 0.25s; }
+  .sidebar-hd { display: flex; }
+
+  .day-tabs-bar { display: block; }
+
+  .planner { flex-direction: column; overflow-x: hidden; overflow-y: auto; padding: 8px; }
+  .day-col { width: 100%; height: auto; display: none; }
+  .day-col.mob { display: flex; }
+  .day-hd { border-radius: var(--radius); }
+  .day-body { border: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); overflow-y: visible; }
+
+  .map-panel.open { height: 220px; }
+
+  /* Modal centers in the space above the map */
+  .modal-bg { padding: 12px; }
+  .modal-box { max-height: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🌴 San Diego Trip Planner – June 2026</h1>
+  <button class="tb" onclick="saveItinerary()">⬇ Save</button>
+  <button class="tb" onclick="document.getElementById('f-in').click()">⬆ Load</button>
+  <input type="file" id="f-in" accept=".json" style="display:none" onchange="loadItinerary(event)">
+  <button class="tb" id="map-btn" onclick="toggleMap()">🗺 Map</button>
+  <button class="tb" id="lib-toggle" onclick="toggleSidebar()">📚 Library</button>
+</div>
+
+<div class="layout">
+  <div class="side-backdrop" id="backdrop" onclick="toggleSidebar()"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-hd">
+      <span>Card Library</span>
+      <button onclick="toggleSidebar()">✕</button>
+    </div>
+    <div class="tabs">
+      <div class="tab on" id="tab-a" onclick="setTab('a')">🗺 Activities</div>
+      <div class="tab" id="tab-r" onclick="setTab('r')">🍽 Restaurants</div>
+    </div>
+    <div class="search-bar"><input type="text" id="q" placeholder="Search…" oninput="renderSidebar()"></div>
+    <div class="pool" id="pool"></div>
+  </div>
+
+  <div class="planner-wrap">
+    <div class="day-tabs-bar" id="dtabs"></div>
+    <div class="planner" id="planner"></div>
+  </div>
+</div>
+
+<div class="map-panel" id="map-panel">
+  <div class="map-resize-handle" id="map-resize-handle"></div>
+  <div id="leaflet-map"></div>
+</div>
+
+<div class="modal-bg" id="modal-bg" onclick="bgClose(event)">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const DAYS = [
+  { id:'mon', label:'Monday',    sub:'Jun 15 · Arrive',  dm:false, color:'#e53e3e' },
+  { id:'tue', label:'Tuesday',   sub:'Jun 16',           dm:false, color:'#dd6b20' },
+  { id:'wed', label:'Wednesday', sub:'Jun 17',           dm:true,  color:'#38a169' },
+  { id:'thu', label:'Thursday',  sub:'Jun 18',           dm:true,  color:'#3182ce' },
+  { id:'fri', label:'Friday',    sub:'Jun 19',           dm:true,  color:'#805ad5' },
+  { id:'sat', label:'Saturday',  sub:'Jun 20 · Depart',  dm:true,  color:'#b7791f' },
+];
+
+const ACTS = [
+  { id:'zoo',         name:'San Diego Zoo',               emoji:'🦁', hood:'Balboa Park',       walk:'Moderate', dur:'Full day',  kids:5, dm:true,  type:'animals',    lat:32.7353, lng:-117.1490, note:'Member discount — D&M must be present. Wheelchair and scooter rentals available at the entrance. Giant panda exhibit drawing big crowds in 2026.' },
+  { id:'safari',      name:'Safari Park',                 emoji:'🦒', hood:'Escondido',          walk:'Low',      dur:'Full day',  kids:5, dm:true,  type:'animals',    lat:33.0975, lng:-116.9986, note:'Free shuttle loop + seated Africa Tram. Giraffes you can feed. Wheelchair and scooter rentals available. ~35 min north of SD.' },
+  { id:'legoland',    name:'Legoland',                    emoji:'🧱', hood:'Carlsbad',           walk:'Moderate', dur:'Full day',  kids:5, dm:false, type:'theme_park', lat:33.1265, lng:-117.3115, note:'Best Mon/Tue without D&M. Ages 2–12 ideal, but new Galaxy Land coaster (2026) helps for the teen.' },
+  { id:'moonlight',   name:'Moonlight Beach + Ice Cream', emoji:'🏖️', hood:'Encinitas',         walk:'Low',      dur:'Half day',  kids:5, dm:false, type:'beach',      lat:33.0428, lng:-117.2924, note:"Free beach wheelchairs + sand mats available. After: Cali Cream on the 101 (David's first pick), JoJo's Creamery, or The Baked Bear." },
+  { id:'coronado',    name:'Coronado Island',             emoji:'🏝️', hood:'Coronado',          walk:'Low',      dur:'Half day',  kids:4, dm:false, type:'beach',      lat:32.6859, lng:-117.1831, note:'Ferry from downtown or drive the bridge. Beautiful flat beach — mica in the sand sparkles. ⚠️ Water unsafe for swimming due to ongoing sewage contamination from Tijuana. Great for walking the shore. Tidelands Park has an all-abilities playground. Pairs with USS Midway.' },
+  { id:'midway',      name:'USS Midway Museum',           emoji:'⚓',  hood:'Downtown',          walk:'Moderate', dur:'Half day',  kids:4, dm:false, type:'museum',     lat:32.7137, lng:-117.1752, note:'~60% accessible — Hangar & Flight Decks both reachable by elevator. Free loaner wheelchairs. Junior Pilot Program audio tour for kids.' },
+  { id:'balboa',      name:'Balboa Park',                 emoji:'🏛️', hood:'Balboa Park',       walk:'Moderate', dur:'Half day',  kids:4, dm:false, type:'museum',     lat:32.7341, lng:-117.1492, note:'Fleet Science Center (best for kids + IMAX), Air & Space Museum, Natural History Museum, Japanese Friendship Garden. Free tram between venues. Free organ concerts Sundays 2pm.' },
+  { id:'birch',       name:'Birch Aquarium',              emoji:'🐠', hood:'La Jolla',           walk:'Low',      dur:'Half day',  kids:5, dm:false, type:'animals',    lat:32.8662, lng:-117.2535, note:'Compact and easy. Giant kelp tank, sharks, touch pools. Paved ocean-view terrace. Pairs perfectly with La Jolla Seals (10 min away).' },
+  { id:'missionbch',  name:'Mission Beach / Belmont Park',emoji:'🎡', hood:'Mission Beach',      walk:'Low',      dur:'Half day',  kids:5, dm:false, type:'theme_park', lat:32.7694, lng:-117.2521, note:'Flat paved boardwalk. Classic Giant Dipper wooden coaster, arcade, mini golf. Bike and surrey rentals.' },
+  { id:'harborcruise',name:'Harbor Cruise',               emoji:'⛴️', hood:'Downtown',          walk:'Minimal',  dur:'2 hrs',    kids:3, dm:false, type:'cruise',     lat:32.7175, lng:-117.1718, note:'Seated the entire time. Narrated tour past Navy ships, Coronado Bridge, downtown skyline. Multiple operators from the Embarcadero.' },
+  { id:'seals',       name:'La Jolla Seals',              emoji:'🦭', hood:'La Jolla',           walk:'Minimal',  dur:'30 min',   kids:5, dm:false, type:'animals',    lat:32.8497, lng:-117.2730, note:'Paved sea wall viewing — no rocky scrambling. Free, no tickets. Best in the morning. Pair with Birch Aquarium for a full La Jolla half-day.' },
+  { id:'padres',      name:'Padres Game',                 emoji:'⚾', hood:'Gaslamp / Downtown', walk:'Low',      dur:'3–4 hrs',  kids:4, dm:false, type:'sports',     lat:32.7073, lng:-117.1571, note:'Petco Park is one of the nicest ballparks in MLB. Fully accessible. Check June schedule at mlb.com/padres.' },
+  { id:'littleitaly', name:'Little Italy',                emoji:'🍕', hood:'Little Italy',       walk:'Low',      dur:'Evening',  kids:3, dm:false, type:'culture',    lat:32.7249, lng:-117.1693, note:"San Diego's most walkable neighborhood. Flat streets, great restaurants, gelato. 10 min from USS Midway. Best for dinner." },
+  { id:'oldtown',     name:'Old Town San Diego',          emoji:'🏰', hood:'Old Town',           walk:'Low',      dur:'Half day', kids:3, dm:false, type:'culture',    lat:32.7544, lng:-117.1963, note:"Free entry. California's first European settlement — adobe buildings, history, Mexican restaurants. Flat and easy. Good arrival-day option." },
+  { id:'whales',      name:'Whale Watching',              emoji:'🐋', hood:'Downtown',           walk:'Minimal',  dur:'3–4 hrs',  kids:4, dm:false, type:'cruise',     lat:32.7178, lng:-117.1715, note:'June = PEAK blue whale season. The feeding grounds off San Diego are world-class. Seated the entire trip. Bring layers — ocean is 10–15°F cooler.' },
+  { id:'cabrillo',    name:'Cabrillo National Monument',  emoji:'⛵', hood:'Point Loma',         walk:'Low',      dur:'Half day', kids:3, dm:false, type:'museum',     lat:32.6733, lng:-117.2418, note:'Historic 1854 lighthouse, WWII bunkers, panoramic views of the bay and skyline. Junior Ranger program for kids. Ask a ranger for accessible parking. $20/vehicle.' },
+  { id:'botanic',     name:'SD Botanic Garden',           emoji:'🌿', hood:'Encinitas',          walk:'Moderate', dur:'Half day', kids:4, dm:false, type:'outdoor',    lat:33.0269, lng:-117.2898, note:"Largest children's garden on the West Coast. Some steep inclines — the Children's Garden is fully accessible. 10 min from Moonlight Beach." },
+  { id:'livingcoast', name:'Living Coast Discovery Ctr',  emoji:'🦅', hood:'Chula Vista',        walk:'Low',      dur:'Half day', kids:4, dm:false, type:'animals',    lat:32.6274, lng:-117.0959, note:'Underrated gem ~20 min south. Free shuttle from parking. Sea turtles, stingrays, bald eagles. Disability admission discount available.' },
+  { id:'seaport',     name:'Seaport Village',             emoji:'🎠', hood:'Downtown',           walk:'Low',      dur:'1–2 hrs',  kids:3, dm:false, type:'culture',    lat:32.7143, lng:-117.1720, note:'Waterfront shops and dining on the bay. Historic 1895 hand-carved carousel. Flat paved waterfront. Some construction ongoing in 2026.' },
+  { id:'lajollashrs', name:'La Jolla Shores Beach',       emoji:'🏄', hood:'La Jolla',           walk:'Low',      dur:'Half day', kids:5, dm:false, type:'beach',      lat:32.8572, lng:-117.2564, note:'Best family swimming beach in SD. Wide flat sand, gentle waves, lifeguards. Beach wheelchairs available. Arrive early — parking is notoriously tight.' },
+  { id:'pb',          name:'Pacific Beach / Crystal Pier',emoji:'🌊', hood:'Pacific Beach',      walk:'Low',      dur:'Half day', kids:4, dm:false, type:'beach',      lat:32.7906, lng:-117.2536, note:'Lively boardwalk beach. Crystal Pier walkout over the ocean. More energy than Moonlight — shops and restaurants on the boardwalk. Adjacent to Mission Beach.' },
+  { id:'sunsetcliffs',name:'Sunset Cliffs',               emoji:'🌅', hood:'Ocean Beach',        walk:'Minimal',  dur:'30 min',   kids:3, dm:false, type:'outdoor',    lat:32.7153, lng:-117.2567, note:'⚠️ Stay well back from edges — sandstone erodes and is genuinely dangerous. Park along Sunset Cliffs Blvd and enjoy the view. Best at golden hour.' },
+];
+
+const RSTS = [
+  { id:'mitchs',      name:"Mitch's Seafood",       emoji:'🐟', cat:'seafood', hood:'Point Loma',          price:'$$',  kids:true,  lat:32.7240944, lng:-117.2272568, map:'https://maps.app.goo.gl/mordGHXAffztUxNE8', note:'Amazing, fresh seafood. Top pick.' },
+  { id:'plseafoods',  name:'Point Loma Seafoods',   emoji:'🐟', cat:'seafood', hood:'Point Loma',          price:'$$',  kids:true,  lat:32.7232519, lng:-117.2278628, map:'https://maps.app.goo.gl/aJgXUnwpgp8P5p568', note:'Also great, but a bit more touristy.' },
+  { id:'seasurf',     name:'Seasurf',               emoji:'🦪', cat:'seafood', hood:'Del Mar',            price:'$$',  kids:true,  lat:32.9506187, lng:-117.2461288, map:'https://maps.app.goo.gl/pDCJRsvVPkp85Bsa7', note:'Good spot for oysters.' },
+  { id:'elpescador',  name:'El Pescador',           emoji:'🐟', cat:'seafood', hood:'La Jolla',            price:'$$',  kids:true,  lat:32.8397488, lng:-117.2763167, map:'https://maps.app.goo.gl/kzqxqtkbNPvFjQPH6', note:'Great seafood in La Jolla.' },
+  { id:'fish101',     name:'Fish 101 Leucadia',     emoji:'🐟', cat:'seafood', hood:'Leucadia',            price:'$$',  kids:true,  lat:33.0731629, lng:-117.3053566, map:'https://maps.app.goo.gl/qTwf4SHy4VwEtHFcA', note:"David's go-to spot in this neighborhood." },
+  { id:'hawaiian',    name:'Hawaiian Fresh Seafood',emoji:'🍣', cat:'seafood', hood:'Mira Mesa',           price:'$',   kids:true,  lat:32.9028458, lng:-117.1756248, map:'https://maps.app.goo.gl/wwboJx46877t8rJBA', note:"Amazing poke — as close to Hawaii as you'll get in SD. This location is the best." },
+  { id:'dintaifung',  name:'Din Tai Fung',          emoji:'🥟', cat:'asian',   hood:'UTC',                 price:'$$',  kids:true,  lat:32.8724573, lng:-117.2129882, map:'https://maps.app.goo.gl/bXXKoA5z8rmoxdDW6', note:'Americanized dim sum with a cult following. Really good dumplings.' },
+  { id:'littlesakana',name:'Little Sakana',         emoji:'🍣', cat:'asian',   hood:'Mira Mesa',           price:'$$',  kids:true,  lat:32.9144248, lng:-117.1459489, map:'https://maps.app.goo.gl/ngpyLnhyC6keVK1JA', note:'All-you-can-eat sushi with a strong local following.' },
+  { id:'dumplinginn', name:'Dumpling Inn',          emoji:'🥟', cat:'asian',   hood:'Convoy',              price:'$',   kids:true,  lat:32.8242554, lng:-117.1543341, map:'https://maps.app.goo.gl/622FArPytu1rBGNLA', note:'Great dumplings and Chinese food. Parking can be tricky in Convoy.' },
+  { id:'ayusushi',    name:'Ayu Sushi',             emoji:'🍱', cat:'asian',   hood:'Pacific Highlands Ranch',     price:'$$',  kids:true,  lat:32.9615321, lng:-117.1897416, map:'https://maps.app.goo.gl/Hpknts1rcL1waNun7', note:'Decent sushi, not too far from home.' },
+  { id:'mikestaco',   name:"Mike's Taco Club",      emoji:'🌮', cat:'tacos',   hood:'Ocean Beach',         price:'$',   kids:true,  lat:32.7476233, lng:-117.2520227, map:'https://maps.app.goo.gl/JJuyVkAM5XukMmtn7', note:'Very good California burritos and big tacos.' },
+  { id:'harrystaco',  name:"Harry's Taco Club",     emoji:'🌮', cat:'tacos',   hood:'Pacific Beach',       price:'$',   kids:true,  lat:32.7986033, lng:-117.2524214, map:'https://maps.app.goo.gl/Pp2LPSH3zjHAVyX88', note:"Same energy as Mike's, in Pacific Beach." },
+  { id:'nicos',       name:"Nico's",                emoji:'🌯', cat:'tacos',   hood:'Ocean Beach',         price:'$',   kids:false, lat:32.7462297, lng:-117.2495845, map:'https://maps.app.goo.gl/xUKWDwaCA1dX16uP8', note:"Supposed to be the best California burrito — David hasn't tried yet. Crowded, hard to park, not ideal with kids." },
+  { id:'calicream',   name:'Cali Cream',            emoji:'🍦', cat:'cafe',    hood:'Encinitas',           price:'$',   kids:true,  lat:33.0437,    lng:-117.2918,    map:'http://calicreamicecream.com', note:"David's first pick for ice cream near Moonlight Beach. Homemade ice cream on the 101." },
+  { id:'achilles',    name:'Achilles Coffee',       emoji:'☕', cat:'cafe',    hood:'Multiple locations',  price:'$',   kids:true,  lat:32.9536886, lng:-117.2293148, map:'https://maps.app.goo.gl/A2GWzimVB4m882Pp7', note:'Good local cafe. Food is better than the coffee, but solid all around.' },
+  { id:'elmisa',      name:'Elmisa',                emoji:'🥑', cat:'cafe',    hood:'Rancho Bernardo',     price:'$',   kids:true,  lat:33.0234426, lng:-117.0817826, map:'https://maps.app.goo.gl/QsDMRjaYheEyLURh6', note:'Great local cafe — breakfast sandwiches, avocado toast, acai bowls.' },
+  { id:'themission',  name:'The Mission',           emoji:'🍳', cat:'cafe',    hood:'North Park',          price:'$',   kids:true,  lat:32.7482955, lng:-117.1334861, map:'https://maps.app.goo.gl/VcNJLPSQ6aqqu2if6', note:'Good brunch. Parking can be tricky.' },
+  { id:'campfire',    name:'Campfire',              emoji:'🔥', cat:'dinner',  hood:'Carlsbad',            price:'$$$', kids:true,  lat:33.1620178, lng:-117.3510571, map:'https://maps.app.goo.gl/EV7Q4zkCsU3xQzw7A', note:"Really good log cabin-themed restaurant. S'mores for dessert. Pricey." },
+  { id:'chickhawk',   name:'Chick & Hawk',          emoji:'🐔', cat:'dinner',  hood:'Encinitas',            price:'$$$', kids:true,  lat:33.0644896, lng:-117.3007221, map:'https://maps.app.goo.gl/aayeFVhNi8gMk4nV9', note:'Chicken sandwiches by Tony Hawk. Really good but pretty pricey.' },
+  { id:'claytons',    name:"Clayton's Bistro",      emoji:'🍽️', cat:'dinner',  hood:'Coronado',           price:'$$',  kids:true,  lat:32.6877687, lng:-117.1784710, map:'https://maps.app.goo.gl/bTatz19ZJL36GFoQ8', note:"David's top pick on Coronado — creative dishes, huge variety." },
+  { id:'rosinas',     name:"Rosina's",              emoji:'🍝', cat:'dinner',  hood:'Black Mountain Ranch',     price:'$$',  kids:true,  lat:32.9903835, lng:-117.1595892, map:'https://maps.app.goo.gl/jkNXxUaK9yrEnY9v9', note:'Pretty Italian restaurant. Food is ok.' },
+  { id:'knottybarrel',name:'Knotty Barrel',         emoji:'🍺', cat:'casual',  hood:'Rancho Penasquitos',  price:'$$',  kids:true,  lat:32.9578019, lng:-117.1262978, map:'https://maps.app.goo.gl/PEnkz3YZdKei3hqB9', note:'Family-friendly sports bar close to home. Really good food. Frequent go-to.' },
+  { id:'serpentine',  name:'Serpentine',            emoji:'🍖', cat:'casual',  hood:'Miramar',       price:'$$',  kids:true,  lat:32.8953142, lng:-117.1372648, map:'https://maps.app.goo.gl/W9up9U4N1y8GGQ5P9', note:'Cidery with surprisingly good BBQ.' },
+];
+
+const ACT_GROUPS = [
+  { k:'animals',    l:'🐾 Animals & Nature' },
+  { k:'beach',      l:'🏖️ Beaches' },
+  { k:'cruise',     l:'⛴️ Boat & Cruise' },
+  { k:'museum',     l:'🏛️ Museums & History' },
+  { k:'outdoor',    l:'🌿 Outdoor' },
+  { k:'theme_park', l:'🎡 Theme Parks' },
+  { k:'culture',    l:'🏙️ Culture & Food' },
+  { k:'sports',     l:'⚾ Sports' },
+];
+const RST_GROUPS = [
+  { k:'seafood', l:'🐟 Seafood' },
+  { k:'asian',   l:'🥢 Asian' },
+  { k:'tacos',   l:'🌮 Tacos & Burritos' },
+  { k:'cafe',    l:'☕ Cafes, Brunch & Ice Cream' },
+  { k:'dinner',  l:'🍽️ Dinner' },
+  { k:'casual',  l:'🍺 Casual / Bar Food' },
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let activeTab = 'a', activeMobDay = 'mon', mapOpen = false, sideOpen = false;
+const sched = {};
+DAYS.forEach(d => sched[d.id] = []);
+let drag = null, pendingAdd = null, isDragging = false;
+
+function isMobile() { return window.matchMedia('(max-width: 680px)').matches; }
+let lmap = null;
+const markerMap = {}; // key: `${dayId}-${kind}-${id}`
+
+// ── MAP ───────────────────────────────────────────────────────────────────────
+
+function initMap() {
+  lmap = L.map('leaflet-map', { center: [32.88, -117.18], zoom: 10 });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom: 19
+  }).addTo(lmap);
+  // Permanent home marker
+  L.marker([32.9618, -117.1034], {
+    icon: L.divIcon({
+      className: '',
+      html: '<div style="font-size:22px;line-height:1;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">🏠</div>',
+      iconSize: [22,22], iconAnchor: [11,20], popupAnchor: [0,-20]
+    }),
+    zIndexOffset: 1000
+  }).bindPopup('<b>🏠 Home</b><br><small style="color:#666">Sunridge Vista, Rancho Penasquitos</small>').addTo(lmap);
+}
+
+function mkIcon(color, hi = false) {
+  const s = hi ? 18 : 13;
+  return L.divIcon({
+    className: '',
+    html: `<div style="background:${color};width:${s}px;height:${s}px;border-radius:50%;border:${hi ? 3 : 2.5}px solid #fff;box-shadow:0 2px ${hi ? 8 : 4}px rgba(0,0,0,.45)${hi ? ';outline:3px solid ' + color + '55' : ''}"></div>`,
+    iconSize: [s,s], iconAnchor: [s/2,s/2], popupAnchor: [0,-s/2]
+  });
+}
+
+function refreshMarkers() {
+  if (!lmap) return;
+  Object.values(markerMap).forEach(m => m.remove());
+  Object.keys(markerMap).forEach(k => delete markerMap[k]);
+  DAYS.forEach(d => {
+    sched[d.id].forEach(item => {
+      const data = item.kind === 'act' ? ACTS.find(x => x.id === item.id) : RSTS.find(x => x.id === item.id);
+      if (!data?.lat) return;
+      const key = `${d.id}-${item.kind}-${item.id}`;
+      markerMap[key] = L.marker([data.lat, data.lng], { icon: mkIcon(d.color) })
+        .bindPopup(`<b>${data.emoji} ${data.name}</b><br><small style="color:#666">${d.label}</small>`)
+        .addTo(lmap);
+    });
+  });
+}
+
+function highlightMarker(kind, id) {
+  if (!mapOpen || !lmap) return;
+  DAYS.forEach(d => {
+    const m = markerMap[`${d.id}-${kind}-${id}`];
+    if (m) { m.setIcon(mkIcon(d.color, true)); m.openPopup(); }
+  });
+}
+
+function unhighlightMarker(kind, id) {
+  if (!lmap) return;
+  DAYS.forEach(d => {
+    const m = markerMap[`${d.id}-${kind}-${id}`];
+    if (m) { m.setIcon(mkIcon(d.color, false)); m.closePopup(); }
+  });
+}
+
+let previewMarker = null;
+
+function mkPreviewIcon() {
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:14px;height:14px;border-radius:50%;border:2.5px dashed #4a5568;background:rgba(255,255,255,0.7);box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
+    iconSize: [14,14], iconAnchor: [7,7], popupAnchor: [0,-9]
+  });
+}
+
+function showPreviewMarker(kind, id) {
+  if (!mapOpen || !lmap) return;
+  const isPlaced = DAYS.some(d => sched[d.id].some(x => x.kind === kind && x.id === id));
+  if (isPlaced) return;
+  const data = kind === 'act' ? ACTS.find(x => x.id === id) : RSTS.find(x => x.id === id);
+  if (!data?.lat) return;
+  if (previewMarker) { previewMarker.remove(); previewMarker = null; }
+  previewMarker = L.marker([data.lat, data.lng], { icon: mkPreviewIcon() })
+    .bindPopup(`<b>${data.emoji} ${data.name}</b><br><small style="color:#999">Not yet scheduled</small>`)
+    .addTo(lmap);
+  previewMarker.openPopup();
+}
+
+function hidePreviewMarker() {
+  if (previewMarker) { previewMarker.remove(); previewMarker = null; }
+}
+
+function initMapResize() {
+  const handle = document.getElementById('map-resize-handle');
+  const panel  = document.getElementById('map-panel');
+  let startY, startH;
+
+  function begin(clientY) {
+    startY = clientY;
+    startH = panel.offsetHeight;
+    panel.style.transition = 'none';
+  }
+  function move(clientY) {
+    const newH = Math.min(Math.max(startH + (startY - clientY), 120), window.innerHeight * 0.65);
+    panel.style.height = newH + 'px';
+    if (lmap) lmap.invalidateSize();
+    syncMobileSidebarBottom();
+  }
+  function end() {
+    panel.style.transition = '';
+    document.removeEventListener('mousemove', onMM);
+    document.removeEventListener('mouseup',   onMU);
+    document.removeEventListener('touchmove', onTM);
+    document.removeEventListener('touchend',  onTE);
+  }
+  function onMM(e) { move(e.clientY); }
+  function onMU()  { end(); }
+  function onTM(e) { e.preventDefault(); move(e.touches[0].clientY); }
+  function onTE()  { end(); }
+
+  handle.addEventListener('mousedown', e => {
+    begin(e.clientY);
+    document.addEventListener('mousemove', onMM);
+    document.addEventListener('mouseup',   onMU);
+    e.preventDefault();
+  });
+  handle.addEventListener('touchstart', e => {
+    begin(e.touches[0].clientY);
+    document.addEventListener('touchmove', onTM, { passive: false });
+    document.addEventListener('touchend',  onTE);
+    e.preventDefault();
+  }, { passive: false });
+}
+
+function getMobileMapHeight() {
+  return mapOpen ? document.getElementById('map-panel').offsetHeight : 0;
+}
+
+function syncMobileSidebarBottom() {
+  if (!isMobile()) return;
+  const h = getMobileMapHeight();
+  const px = h ? h + 'px' : '';
+  document.getElementById('sidebar').style.bottom  = px;
+  document.getElementById('backdrop').style.bottom = px;
+  document.getElementById('modal-bg').style.bottom = px;
+}
+
+let detailOpen = false;
+
+function toggleMap() {
+  mapOpen = !mapOpen;
+  const panel = document.getElementById('map-panel');
+  if (!mapOpen) panel.style.height = '';
+  panel.classList.toggle('open', mapOpen);
+  document.getElementById('map-btn').classList.toggle('on', mapOpen);
+  if (mapOpen) {
+    if (!lmap) { initMap(); initMapResize(); }
+    setTimeout(() => { lmap.invalidateSize(); refreshMarkers(); syncMobileSidebarBottom(); }, 260);
+  } else {
+    syncMobileSidebarBottom();
+  }
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+
+function toggleSidebar() {
+  sideOpen = !sideOpen;
+  document.getElementById('sidebar').classList.toggle('open', sideOpen);
+  document.getElementById('backdrop').classList.toggle('show', sideOpen);
+}
+
+function setTab(t) {
+  activeTab = t;
+  document.getElementById('tab-a').classList.toggle('on', t === 'a');
+  document.getElementById('tab-r').classList.toggle('on', t === 'r');
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const groups = activeTab === 'a' ? ACT_GROUPS : RST_GROUPS;
+  const items  = activeTab === 'a' ? ACTS : RSTS;
+  const keyFn  = activeTab === 'a' ? x => x.type : x => x.cat;
+
+  groups.forEach(({ k, l }) => {
+    const list = items.filter(x => keyFn(x) === k && (!q || x.name.toLowerCase().includes(q) || x.hood.toLowerCase().includes(q) || x.note.toLowerCase().includes(q)));
+    if (!list.length) return;
+    const lbl = document.createElement('div');
+    lbl.className = 'sec-lbl';
+    lbl.textContent = l;
+    pool.appendChild(lbl);
+    list.forEach(x => pool.appendChild(activeTab === 'a' ? actCard(x, null, null) : rstCard(x, null, null)));
+  });
+}
+
+// ── PLANNER ───────────────────────────────────────────────────────────────────
+
+function renderDayTabs() {
+  document.getElementById('dtabs').innerHTML = DAYS.map(d =>
+    `<span class="dtab${d.id === activeMobDay ? ' on' : ''}" onclick="setMobDay('${d.id}')">${d.label.slice(0,3)}</span>`
+  ).join('');
+}
+
+function setMobDay(id) {
+  activeMobDay = id;
+  renderDayTabs();
+  document.querySelectorAll('.day-col').forEach(el => el.classList.toggle('mob', el.id === `col-${id}`));
+}
+
+function renderPlanner() {
+  const pl = document.getElementById('planner');
+  pl.innerHTML = '';
+  DAYS.forEach(d => {
+    const col = document.createElement('div');
+    col.className = `day-col d-${d.id}${d.id === activeMobDay ? ' mob' : ''}`;
+    col.id = `col-${d.id}`;
+    col.innerHTML = `<div class="day-hd"><div class="dn">${d.label}</div>${d.sub ? `<div class="ds">${d.sub}</div>` : ''}${d.dm ? '<div class="dm">D&M ✓</div>' : ''}</div><div class="day-body" id="day-${d.id}"></div>`;
+    const body = col.querySelector('.day-body');
+    body.addEventListener('dragover', e => { e.preventDefault(); body.classList.add('over'); });
+    body.addEventListener('dragleave', () => body.classList.remove('over'));
+    body.addEventListener('drop', e => onDrop(e, d.id));
+    pl.appendChild(col);
+    renderDay(d.id);
+  });
+}
+
+function renderDay(dayId) {
+  const body = document.getElementById(`day-${dayId}`);
+  if (!body) return;
+  body.innerHTML = '';
+  if (!sched[dayId].length) { body.innerHTML = `<div class="empty-hint">${isMobile() ? 'Tap a card to add' : 'Drop here'}</div>`; return; }
+  sched[dayId].forEach((item, idx) => {
+    const el = item.kind === 'act'
+      ? actCard(ACTS.find(x => x.id === item.id), dayId, idx)
+      : rstCard(RSTS.find(x => x.id === item.id), dayId, idx);
+    if (el) body.appendChild(el);
+  });
+}
+
+// ── CARD BUILDERS ─────────────────────────────────────────────────────────────
+
+function actCard(a, dayId, idx) {
+  if (!a) return null;
+  const el = document.createElement('div');
+  el.className = `card t-${a.type}${dayId ? ' in-day' : ''}`;
+  el.draggable = true;
+  const stars = '⭐'.repeat(a.kids);
+  el.innerHTML = `
+    ${dayId !== null ? `<button class="cbtn rm" style="position:absolute;top:6px;right:6px">✕</button>` : ''}
+    <div class="card-hd">${a.emoji} ${a.name}</div>
+    <div class="card-sub">📍 ${a.hood}${a.dm ? ' <span class="b b-dm">D&M req</span>' : ''}</div>
+    <div class="card-badges">
+      <span class="b b-walk">🚶 ${a.walk}</span>
+      <span class="b b-dur">⏱ ${a.dur}</span>
+      <span class="b b-kids">${stars}</span>
+    </div>
+    <div class="card-note">${a.note}</div>`;
+  if (dayId !== null) el.querySelector('.rm').addEventListener('click', e => { e.stopPropagation(); removeItem(dayId, idx); });
+  el.addEventListener('click', () => { if (!isDragging) showDetail('act', a.id, dayId); });
+  el.draggable = !isMobile();
+  el.addEventListener('dragstart', e => { isDragging = true; startDrag(e, el, 'act', a.id, dayId); });
+  el.addEventListener('dragend', () => { el.classList.remove('dragging'); setTimeout(() => { isDragging = false; }, 50); });
+  if (!isMobile()) {
+    el.addEventListener('mouseenter', () => { highlightMarker('act', a.id); showPreviewMarker('act', a.id); });
+    el.addEventListener('mouseleave', () => { if (!detailOpen) { unhighlightMarker('act', a.id); hidePreviewMarker(); } });
+  }
+  return el;
+}
+
+function rstCard(r, dayId, idx) {
+  if (!r) return null;
+  const el = document.createElement('div');
+  el.className = `card c-${r.cat}${dayId ? ' in-day' : ''}`;
+  el.draggable = true;
+  el.innerHTML = `
+    ${dayId !== null ? `<button class="cbtn rm" style="position:absolute;top:6px;right:6px">✕</button>` : ''}
+    <div class="card-hd">${r.emoji} ${r.name}</div>
+    <div class="card-sub">📍 ${r.hood} <span class="b b-price">${r.price}</span>${!r.kids ? ' <span class="b b-nokid">⚠ Kids</span>' : ''}</div>
+    <div class="card-note">${r.note}</div>
+    <a class="map-lnk" href="${r.map}" target="_blank">🗺 Open in Maps</a>`;
+  if (dayId !== null) el.querySelector('.rm').addEventListener('click', e => { e.stopPropagation(); removeItem(dayId, idx); });
+  el.addEventListener('click', e => { if (!isDragging && !e.target.classList.contains('map-lnk')) showDetail('rst', r.id, dayId); });
+  el.draggable = !isMobile();
+  el.addEventListener('dragstart', e => { isDragging = true; startDrag(e, el, 'rst', r.id, dayId); });
+  el.addEventListener('dragend', () => { el.classList.remove('dragging'); setTimeout(() => { isDragging = false; }, 50); });
+  if (!isMobile()) {
+    el.addEventListener('mouseenter', () => { highlightMarker('rst', r.id); showPreviewMarker('rst', r.id); });
+    el.addEventListener('mouseleave', () => { if (!detailOpen) { unhighlightMarker('rst', r.id); hidePreviewMarker(); } });
+  }
+  return el;
+}
+
+// ── DETAIL MODAL ──────────────────────────────────────────────────────────────
+
+function showDetail(kind, id, currentDay) {
+  const d = kind === 'act' ? ACTS.find(x => x.id === id) : RSTS.find(x => x.id === id);
+  if (!d) return;
+  pendingAdd = { kind, id };
+
+  const dayBtns = DAYS.map(day => {
+    const placed = sched[day.id].some(x => x.kind === kind && x.id === id);
+    const disabled = kind === 'act' && placed;
+    return `<button class="dpick${placed ? ' placed' : ''}" onclick="addViaModal('${day.id}')"${disabled ? ' disabled' : ''}>${day.label.slice(0,3)}${placed ? ' ✓' : ''}</button>`;
+  }).join('');
+
+  let body;
+  if (kind === 'act') {
+    const stars = '⭐'.repeat(d.kids);
+    body = `
+      <div class="m-head">
+        <div class="m-emoji">${d.emoji}</div>
+        <div class="m-title"><h2>${d.name}</h2><div class="sub">📍 ${d.hood}</div></div>
+        <button class="m-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="m-body">
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <span class="b b-walk">🚶 ${d.walk}</span>
+          <span class="b b-dur">⏱ ${d.dur}</span>
+          <span class="b b-kids">${stars}</span>
+          ${d.dm ? '<span class="b b-dm">D&M required for discount</span>' : ''}
+        </div>
+        <div class="m-note">${d.note}</div>
+        <div class="m-add"><p>Add to day:</p><div class="day-grid">${dayBtns}</div></div>
+      </div>`;
+  } else {
+    body = `
+      <div class="m-head">
+        <div class="m-emoji">${d.emoji}</div>
+        <div class="m-title"><h2>${d.name}</h2><div class="sub">📍 ${d.hood} · ${d.price}${!d.kids ? ' · ⚠ Not ideal for kids' : ''}</div></div>
+        <button class="m-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="m-body">
+        <div class="m-note">${d.note}</div>
+        <a class="map-lnk" href="${d.map}" target="_blank" style="font-size:13px">🗺 Open in Maps</a>
+        <div class="m-add"><p>Add to day:</p><div class="day-grid">${dayBtns}</div></div>
+      </div>`;
+  }
+  document.getElementById('modal-box').innerHTML = body;
+  document.getElementById('modal-bg').classList.add('show');
+  detailOpen = true;
+  syncMobileSidebarBottom();
+  // Show marker — works on both mobile (tap) and desktop (click)
+  highlightMarker(kind, id);
+  showPreviewMarker(kind, id);
+}
+
+function addViaModal(dayId) {
+  if (!pendingAdd) return;
+  const { kind, id } = pendingAdd;
+  if (kind === 'act' && sched[dayId].some(x => x.kind === 'act' && x.id === id)) return;
+  sched[dayId].push({ kind, id });
+  renderDay(dayId);
+  refreshMarkers();
+  closeModal();
+}
+
+function closeModal() {
+  if (pendingAdd) { unhighlightMarker(pendingAdd.kind, pendingAdd.id); hidePreviewMarker(); }
+  document.getElementById('modal-bg').classList.remove('show');
+  pendingAdd = null;
+  detailOpen = false;
+}
+function bgClose(e) { if (e.target === document.getElementById('modal-bg')) closeModal(); }
+
+// ── DRAG & DROP ───────────────────────────────────────────────────────────────
+
+function startDrag(e, el, kind, id, src) {
+  drag = { kind, id, src };
+  el.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onDrop(e, target) {
+  e.preventDefault();
+  document.getElementById(`day-${target}`).classList.remove('over');
+  if (!drag) return;
+  const { kind, id, src } = drag; drag = null;
+  if (src) {
+    const i = sched[src].findIndex(x => x.kind === kind && x.id === id);
+    if (i !== -1) sched[src].splice(i, 1);
+  }
+  if (kind === 'act' && sched[target].some(x => x.kind === 'act' && x.id === id)) {
+    if (src && src !== target) renderDay(src);
+    return;
+  }
+  sched[target].push({ kind, id });
+  if (src && src !== target) renderDay(src);
+  renderDay(target);
+  refreshMarkers();
+}
+
+function removeItem(dayId, idx) {
+  sched[dayId].splice(idx, 1);
+  renderDay(dayId);
+  refreshMarkers();
+}
+
+// ── SAVE / LOAD ───────────────────────────────────────────────────────────────
+
+function saveItinerary() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(sched, null, 2)], { type: 'application/json' }));
+  a.download = 'san-diego-itinerary.json';
+  a.click();
+}
+
+function loadItinerary(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      DAYS.forEach(d => { if (data[d.id]) sched[d.id] = data[d.id]; });
+      renderPlanner();
+      refreshMarkers();
+    } catch { alert("Couldn't load file."); }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── RESPONSIVE BREAKPOINT HANDLER ─────────────────────────────────────────────
+
+function onBreakpointChange() {
+  if (!isMobile()) {
+    // Switching to desktop: clear mobile inline styles so CSS takes over cleanly
+    ['sidebar','backdrop','modal-bg'].forEach(id => {
+      document.getElementById(id).style.bottom = '';
+    });
+    // Close the sidebar overlay if it was open as a mobile drawer
+    if (sideOpen) {
+      sideOpen = false;
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('backdrop').classList.remove('show');
+    }
+  }
+  // Re-render cards so draggable + hover handlers are correct for current viewport
+  renderSidebar();
+  renderDayTabs();
+  renderPlanner();
+  syncMobileSidebarBottom();
+  if (lmap) lmap.invalidateSize();
+}
+
+window.matchMedia('(max-width: 680px)').addEventListener('change', onBreakpointChange);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+renderSidebar();
+renderDayTabs();
+renderPlanner();
+</script>
+</body>
+</html>
