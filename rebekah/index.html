@@ -229,9 +229,9 @@ const DAYS = [
 ];
 
 const ACTS = [
-  { id:'zoo',         name:'San Diego Zoo',               emoji:'🦁', hood:'Balboa Park',       walk:'Moderate', dur:'Full day',  kids:5, dm:true,  type:'animals',    lat:32.7353, lng:-117.1490, note:'Member discount — D&M must be present. Wheelchair and scooter rentals available at the entrance. Giant panda exhibit drawing big crowds in 2026.' },
-  { id:'safari',      name:'Safari Park',                 emoji:'🦒', hood:'Escondido',          walk:'Low',      dur:'Full day',  kids:5, dm:true,  type:'animals',    lat:33.0975, lng:-116.9986, note:'Free shuttle loop + seated Africa Tram. Giraffes you can feed. Wheelchair and scooter rentals available. ~35 min north of SD.' },
-  { id:'legoland',    name:'Legoland',                    emoji:'🧱', hood:'Carlsbad',           walk:'Moderate', dur:'Full day',  kids:5, dm:false, type:'theme_park', lat:33.1265, lng:-117.3115, note:'Best Mon/Tue without D&M. Ages 2–12 ideal, but new Galaxy Land coaster (2026) helps for the teen.' },
+  { id:'zoo',         name:'San Diego Zoo',               emoji:'🦁', hood:'Balboa Park',       walk:'High',     dur:'Full day',  kids:5, dm:true,  type:'animals',    lat:32.7353, lng:-117.1490, note:'Member discount — D&M must be present. Very hilly with a lot of walking — wheelchair and scooter rentals available at the entrance. Giant panda exhibit drawing big crowds in 2026.' },
+  { id:'safari',      name:'Safari Park',                 emoji:'🦒', hood:'Escondido',          walk:'High',     dur:'Full day',  kids:5, dm:true,  type:'animals',    lat:33.0975, lng:-116.9986, note:'Free shuttle loop + seated Africa Tram. Giraffes you can feed. Still a lot of walking despite the shuttle — scooter rentals available.' },
+  { id:'legoland',    name:'Legoland',                    emoji:'🧱', hood:'Carlsbad',           walk:'Moderate', dur:'Full day',  kids:5, dm:false, type:'theme_park', lat:33.1265, lng:-117.3115, note:'Best Mon/Tue without D&M. New Galaxy Land coaster added in 2026.' },
   { id:'moonlight',   name:'Moonlight Beach + Ice Cream', emoji:'🏖️', hood:'Encinitas',         walk:'Low',      dur:'Half day',  kids:5, dm:false, type:'beach',      lat:33.0428, lng:-117.2924, note:"Free beach wheelchairs + sand mats available. After: Cali Cream on the 101 (David's first pick), JoJo's Creamery, or The Baked Bear." },
   { id:'coronado',    name:'Coronado Island',             emoji:'🏝️', hood:'Coronado',          walk:'Low',      dur:'Half day',  kids:4, dm:false, type:'beach',      lat:32.6859, lng:-117.1831, note:'Ferry from downtown or drive the bridge. Beautiful flat beach — mica in the sand sparkles. ⚠️ Water unsafe for swimming due to ongoing sewage contamination from Tijuana. Great for walking the shore. Tidelands Park has an all-abilities playground. Pairs with USS Midway.' },
   { id:'midway',      name:'USS Midway Museum',           emoji:'⚓',  hood:'Downtown',          walk:'Moderate', dur:'Half day',  kids:4, dm:false, type:'museum',     lat:32.7137, lng:-117.1752, note:'~60% accessible — Hangar & Flight Decks both reachable by elevator. Free loaner wheelchairs. Junior Pilot Program audio tour for kids.' },
@@ -240,10 +240,9 @@ const ACTS = [
   { id:'missionbch',  name:'Mission Beach / Belmont Park',emoji:'🎡', hood:'Mission Beach',      walk:'Low',      dur:'Half day',  kids:5, dm:false, type:'theme_park', lat:32.7694, lng:-117.2521, note:'Flat paved boardwalk. Classic Giant Dipper wooden coaster, arcade, mini golf. Bike and surrey rentals.' },
   { id:'harborcruise',name:'Harbor Cruise',               emoji:'⛴️', hood:'Downtown',          walk:'Minimal',  dur:'2 hrs',    kids:3, dm:false, type:'cruise',     lat:32.7175, lng:-117.1718, note:'Seated the entire time. Narrated tour past Navy ships, Coronado Bridge, downtown skyline. Multiple operators from the Embarcadero.' },
   { id:'seals',       name:'La Jolla Seals',              emoji:'🦭', hood:'La Jolla',           walk:'Minimal',  dur:'30 min',   kids:5, dm:false, type:'animals',    lat:32.8497, lng:-117.2730, note:'Paved sea wall viewing — no rocky scrambling. Free, no tickets. Best in the morning. Pair with Birch Aquarium for a full La Jolla half-day.' },
-  { id:'padres',      name:'Padres Game',                 emoji:'⚾', hood:'Gaslamp / Downtown', walk:'Low',      dur:'3–4 hrs',  kids:4, dm:false, type:'sports',     lat:32.7073, lng:-117.1571, note:'Petco Park is one of the nicest ballparks in MLB. Fully accessible. Check June schedule at mlb.com/padres.' },
-  { id:'littleitaly', name:'Little Italy',                emoji:'🍕', hood:'Little Italy',       walk:'Low',      dur:'Evening',  kids:3, dm:false, type:'culture',    lat:32.7249, lng:-117.1693, note:"San Diego's most walkable neighborhood. Flat streets, great restaurants, gelato. 10 min from USS Midway. Best for dinner." },
+  { id:'littleitaly', name:'Little Italy',                emoji:'🍕', hood:'Downtown',           walk:'Low',      dur:'Evening',  kids:2, dm:false, type:'culture',    lat:32.7249, lng:-117.1693, note:"Great restaurants and gelato but downtown and less kid-friendly — better as an adults' dinner or drinks spot. 10 min from USS Midway." },
   { id:'oldtown',     name:'Old Town San Diego',          emoji:'🏰', hood:'Old Town',           walk:'Low',      dur:'Half day', kids:3, dm:false, type:'culture',    lat:32.7544, lng:-117.1963, note:"Free entry. California's first European settlement — adobe buildings, history, Mexican restaurants. Flat and easy. Good arrival-day option." },
-  { id:'whales',      name:'Whale Watching',              emoji:'🐋', hood:'Downtown',           walk:'Minimal',  dur:'3–4 hrs',  kids:4, dm:false, type:'cruise',     lat:32.7178, lng:-117.1715, note:'June = PEAK blue whale season. The feeding grounds off San Diego are world-class. Seated the entire trip. Bring layers — ocean is 10–15°F cooler.' },
+  { id:'whales',      name:'Whale Watching',              emoji:'🐋', hood:'Downtown',           walk:'Minimal',  dur:'3–4 hrs',  kids:4, dm:false, type:'cruise',     lat:32.7178, lng:-117.1715, note:'June is peak blue whale season — dolphins are almost guaranteed, whales are low-to-moderate odds but you might get lucky. Seated the entire trip. Bring layers — ocean is 10–15°F cooler.' },
   { id:'cabrillo',    name:'Cabrillo National Monument',  emoji:'⛵', hood:'Point Loma',         walk:'Low',      dur:'Half day', kids:3, dm:false, type:'museum',     lat:32.6733, lng:-117.2418, note:'Historic 1854 lighthouse, WWII bunkers, panoramic views of the bay and skyline. Junior Ranger program for kids. Ask a ranger for accessible parking. $20/vehicle.' },
   { id:'botanic',     name:'SD Botanic Garden',           emoji:'🌿', hood:'Encinitas',          walk:'Moderate', dur:'Half day', kids:4, dm:false, type:'outdoor',    lat:33.0269, lng:-117.2898, note:"Largest children's garden on the West Coast. Some steep inclines — the Children's Garden is fully accessible. 10 min from Moonlight Beach." },
   { id:'livingcoast', name:'Living Coast Discovery Ctr',  emoji:'🦅', hood:'Chula Vista',        walk:'Low',      dur:'Half day', kids:4, dm:false, type:'animals',    lat:32.6274, lng:-117.0959, note:'Underrated gem ~20 min south. Free shuttle from parking. Sea turtles, stingrays, bald eagles. Disability admission discount available.' },
@@ -251,6 +250,7 @@ const ACTS = [
   { id:'lajollashrs', name:'La Jolla Shores Beach',       emoji:'🏄', hood:'La Jolla',           walk:'Low',      dur:'Half day', kids:5, dm:false, type:'beach',      lat:32.8572, lng:-117.2564, note:'Best family swimming beach in SD. Wide flat sand, gentle waves, lifeguards. Beach wheelchairs available. Arrive early — parking is notoriously tight.' },
   { id:'pb',          name:'Pacific Beach / Crystal Pier',emoji:'🌊', hood:'Pacific Beach',      walk:'Low',      dur:'Half day', kids:4, dm:false, type:'beach',      lat:32.7906, lng:-117.2536, note:'Lively boardwalk beach. Crystal Pier walkout over the ocean. More energy than Moonlight — shops and restaurants on the boardwalk. Adjacent to Mission Beach.' },
   { id:'sunsetcliffs',name:'Sunset Cliffs',               emoji:'🌅', hood:'Ocean Beach',        walk:'Minimal',  dur:'30 min',   kids:3, dm:false, type:'outdoor',    lat:32.7153, lng:-117.2567, note:'⚠️ Stay well back from edges — sandstone erodes and is genuinely dangerous. Park along Sunset Cliffs Blvd and enjoy the view. Best at golden hour.' },
+  { id:'fletchercove',name:'Fletcher Cove Beach Park',   emoji:'🏖️', hood:'Solana Beach',       walk:'Low',      dur:'Half day',  kids:5, dm:false, type:'beach',      lat:32.9902, lng:-117.2721, note:'Smaller cove beach in Solana Beach with a park, playground, basketball courts, and restrooms. Less crowded than the bigger beaches. Good option right in between La Jolla and Encinitas.' },
 ];
 
 const RSTS = [
@@ -656,6 +656,7 @@ function addViaModal(dayId) {
   const { kind, id } = pendingAdd;
   if (kind === 'act' && sched[dayId].some(x => x.kind === 'act' && x.id === id)) return;
   sched[dayId].push({ kind, id });
+  persistSched();
   renderDay(dayId);
   refreshMarkers();
   closeModal();
@@ -691,6 +692,7 @@ function onDrop(e, target) {
     return;
   }
   sched[target].push({ kind, id });
+  persistSched();
   if (src && src !== target) renderDay(src);
   renderDay(target);
   refreshMarkers();
@@ -698,15 +700,57 @@ function onDrop(e, target) {
 
 function removeItem(dayId, idx) {
   sched[dayId].splice(idx, 1);
+  persistSched();
   renderDay(dayId);
   refreshMarkers();
 }
 
+// ── PERSISTENCE (cookies + localStorage fallback) ────────────────────────────
+
+const STORAGE_KEY = 'sd_itinerary_2026';
+
+function persistSched() {
+  const json = JSON.stringify(sched);
+  try {
+    const exp = new Date(); exp.setFullYear(exp.getFullYear() + 1);
+    document.cookie = `${STORAGE_KEY}=${encodeURIComponent(json)}; expires=${exp.toUTCString()}; path=/; Secure; SameSite=Strict`;
+  } catch (e) {}
+  try { localStorage.setItem(STORAGE_KEY, json); } catch (e) {}
+}
+
+function restoreSched() {
+  let data = null;
+  try {
+    const m = document.cookie.match(new RegExp(STORAGE_KEY + '=([^;]+)'));
+    if (m) data = JSON.parse(decodeURIComponent(m[1]));
+  } catch (e) {}
+  if (!data) {
+    try { const s = localStorage.getItem(STORAGE_KEY); if (s) data = JSON.parse(s); } catch (e) {}
+  }
+  if (data) DAYS.forEach(d => { if (data[d.id]) sched[d.id] = data[d.id]; });
+}
+
 // ── SAVE / LOAD ───────────────────────────────────────────────────────────────
 
-function saveItinerary() {
+async function saveItinerary() {
+  const json = JSON.stringify(sched, null, 2);
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: 'san-diego-itinerary.json',
+        types: [{ description: 'JSON file', accept: { 'application/json': ['.json'] } }]
+      });
+      const writable = await handle.createWritable();
+      await writable.write(json);
+      await writable.close();
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return; // user cancelled — do nothing
+    }
+  }
+  // Fallback for Safari / Firefox (no showSaveFilePicker support)
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(sched, null, 2)], { type: 'application/json' }));
+  a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
   a.download = 'san-diego-itinerary.json';
   a.click();
 }
@@ -719,6 +763,7 @@ function loadItinerary(e) {
     try {
       const data = JSON.parse(ev.target.result);
       DAYS.forEach(d => { if (data[d.id]) sched[d.id] = data[d.id]; });
+      persistSched();
       renderPlanner();
       refreshMarkers();
     } catch { alert("Couldn't load file."); }
@@ -754,6 +799,7 @@ window.matchMedia('(max-width: 680px)').addEventListener('change', onBreakpointC
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
+restoreSched();
 renderSidebar();
 renderDayTabs();
 renderPlanner();
